@@ -11,15 +11,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #code to generate the study area map (Figure 1 in manuscript)
 
-#PREP
-
-#install packages (rnaturalearth & rnaturalearth data for mapping data, ggplot2 & ggpubr for creating figure)
+#install packages (rnaturalearth & rnaturalearth data for mapping data, ggplot2, ggpubr, & cowplot for creating figure)
 
 ```{r}
 #install.packages("rnaturalearth")
 #install.packages("rnaturalearthdata")
 #install.packages("ggplot2")
 #install.packages("ggpubr")
+#install.packages("cowplot")
 ```
 
 #load libraries 
@@ -29,9 +28,8 @@ library(rnaturalearth)
 library(rnaturalearthdata)
 library(ggplot2)
 library(ggpubr)
+library(cowplot)
 ```
-
-#DATA
 
 #get natural earth land data
 
@@ -39,19 +37,36 @@ library(ggpubr)
 world <- ne_countries(scale = "large", returnclass = "sf")
 ```
 
+#put Juneau and Bridget Cove locations into dataframe
+
+```{r}
+sites <- data.frame(Location = c("Juneau, AK", "Bridget Cove"), longitude = c(-134.4201, -134.9488), latitude = c(58.3005, 58.6338))
+```
+
 #SEAK area base map 
 
 ```{r}
 seak_area <- ggplot() +
   geom_sf(data = world) + 
-  coord_sf(xlim = c(-136, -130), ylim = c(54.5,59)) + 
+  coord_sf(xlim = c(-138, -130), ylim = c(54.6,59.6)) + 
   theme_pubr() +
   xlab("Longitude") +
   ylab("Latitude") +
-  scale_x_continuous(breaks = c(-136, -134, -132, -130)) +
+  scale_x_continuous(breaks = c(-138, -136, -134, -132, -130)) +
   annotation_scale(location = "bl", width_hint = 0.4) +
   annotation_north_arrow(location = "bl", which_north = "true", 
         pad_x = unit(0.0, "in"), pad_y = unit(0.2, "in"),
-        style = north_arrow_fancy_orienteering) 
+        style = north_arrow_fancy_orienteering) + 
+  geom_point(data = sites, aes(x = longitude, y = latitude, fill = Location), size = 5, 
+        shape = 21) +
+  scale_fill_manual(values = c("#AAB8DC", "#BBEFBE")) +
+  theme(legend.position = "right")
+seak_area
+```
+
+#save as jpeg
+
+```{r}
+jpeg("../Figures/Fig1.jpg", width = 8, height = 5, units="in", res=600)
 seak_area
 ```
