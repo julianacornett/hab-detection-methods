@@ -41,7 +41,7 @@ oyster_psts$Collection_Date <- as.Date(oyster_psts$Collection_Date, "%m/%d/%Y")
 
 ```{r}
 pst_plot <- ggplot(oyster_psts, aes(x = Collection_Date, y = Tox_ug_100g, fill = Method)) +
-  geom_point(size = 3, shape = 21) +
+  geom_point(size = 5, shape = 21) +
   scale_fill_manual(values = c("#FEF6A8", "#BC7BCC")) +
   theme_pubr() +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
