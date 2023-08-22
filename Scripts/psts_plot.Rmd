@@ -43,7 +43,7 @@ oyster_psts$Collection_Date <- as.Date(oyster_psts$Collection_Date, "%m/%d/%Y")
 psts_summer23 <- subset(oyster_psts, Collection_Date >= "2023-05-04")
 ```
 
-#timeseries plot
+#timeseries plot (maybe add colored shading for when farm was shut down/testing above DEC levels? Or add in DEC levels in a different color?)
 
 ```{r}
 pst_plot <- ggplot(psts_summer23, aes(x = Collection_Date, y = Tox_ug_100g)) +
