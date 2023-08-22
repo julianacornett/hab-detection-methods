@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #code to generate the study area map (Figure 1 in manuscript)
 
-#install packages (rnaturalearth & rnaturalearth data for mapping data, ggplot2, ggpubr, & cowplot for creating figure, RColorBrewer for palette)
+#install packages (rnaturalearth & rnaturalearth data for mapping data, ggplot2, ggpubr, & cowplot for creating figure)
 
 ```{r}
 #install.packages("rnaturalearth")
@@ -19,7 +19,6 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages("ggplot2")
 #install.packages("ggpubr")
 #install.packages("cowplot")
-#install.packages("RColorBrewer")
 ```
 
 #load libraries 
@@ -30,7 +29,6 @@ library(rnaturalearthdata)
 library(ggplot2)
 library(ggpubr)
 library(cowplot)
-library(RColorBrewer)
 ```
 
 #get natural earth land data
@@ -43,12 +41,6 @@ world <- ne_countries(scale = "large", returnclass = "sf")
 
 ```{r}
 sites <- data.frame(Location = c("Juneau, AK", "Bridget Cove"), longitude = c(-134.4201, -134.9488), latitude = c(58.3005, 58.6338))
-```
-
-#create palette
-
-```{r}
-brewer.pal(6, "YlGnBu")
 ```
 
 #SEAK area base map 
