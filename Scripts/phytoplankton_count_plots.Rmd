@@ -27,26 +27,22 @@ library(ggpubr)
 library(patchwork)
 ```
 
-#read in phytoplankton count data (net tow, 1m, & 5m)
+#read in Alexandrium count data (includes net tow, 1m, & 5m)
 
 ```{r}
-phyto_net <- read.csv("../Data/Phytoplankton_NetTow.csv")
-phyto_1m <- read.csv("../Data/Phytoplankton_1m.csv")
-phyto_5m <- read.csv("../Data/Phytoplankton_5m.csv")
+alex <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
 ```
 
 #put date in date format for timeseries
 
 ```{r}
-phyto_net$Date <- as.Date(phyto_net$Date, "%m/%d/%Y")
-phyto_1m$Date <- as.Date(phyto_1m$Date, "%m/%d/%Y")
-phyto_5m$Date <- as.Date(phyto_5m$Date, "%m/%d/%Y")
+alex$Date <- as.Date(alex$Date, "%m/%d/%Y")
 ```
 
 #net tow plot (A)
 
 ```{r}
-plot_net <- ggplot(phyto_net, aes(x = Date, y = Alexandrium_spp)) +
+plot_net <- ggplot(alex, aes(x = Date, y = Count_Net)) +
   geom_point(size = 5, shape = 21, fill = "#BBEFBE") +
   theme_pubr() +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
@@ -58,7 +54,7 @@ plot_net
 #1m plot (B)
 
 ```{r}
-plot_1m <- ggplot(phyto_1m, aes(x = Date, y = Alexandrium_spp)) +
+plot_1m <- ggplot(alex, aes(x = Date, y = Count_1m_L)) +
   geom_point(size = 5, shape = 21, fill = "#99DEDB") +
   theme_pubr() +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
@@ -70,7 +66,7 @@ plot_1m
 #5m plot (C)
 
 ```{r}
-plot_5m <- ggplot(phyto_5m, aes(x = Date, y = Alexandrium_spp)) +
+plot_5m <- ggplot(alex, aes(x = Date, y = Count_5m_L)) +
   geom_point(size = 5, shape = 21, fill = "#AAB8DC") +
   theme_pubr() +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
