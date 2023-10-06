@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #code to generate the study area map (Figure 1 in manuscript)
 
-#install packages (rnaturalearth & rnaturalearth data for mapping data, ggplot2, ggpubr, & cowplot for creating figure)
+#install packages (rnaturalearth & rnaturalearth data for mapping data, ggplot2, ggpubr, & cowplot for creating figure, ggspatial for scale bar and N arrow)
 
 ```{r}
 #install.packages("rnaturalearth")
@@ -19,6 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages("ggplot2")
 #install.packages("ggpubr")
 #install.packages("cowplot")
+#install.pacakges("ggspatial")
 ```
 
 #load libraries 
@@ -29,6 +30,13 @@ library(rnaturalearthdata)
 library(ggplot2)
 library(ggpubr)
 library(cowplot)
+library(ggspatial)
+```
+
+#high-resolution coastline data (downloaded from https://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html - store file locally on Desktop and navigate to file with relative path because file is too large to push to GitHub)
+
+```{r}
+map_gshhs <- sf::read_sf('../../gshhg-shp-2.3.7/GSHHS_shp/f/GSHHS_f_L1.shp') 
 ```
 
 #get natural earth land data
@@ -43,11 +51,11 @@ world <- ne_countries(scale = "large", returnclass = "sf")
 sites <- data.frame(Location = c("Juneau, AK", "Bridget Cove"), longitude = c(-134.4201, -134.9488), latitude = c(58.3005, 58.6338))
 ```
 
-#SEAK area base map 
+#SEAK area base map - ADD INSET
 
 ```{r}
 seak_area <- ggplot() +
-  geom_sf(data = world) + 
+  geom_sf(data = map_gshhs) + 
   coord_sf(xlim = c(-138, -130), ylim = c(54.6,59.6)) + 
   theme_pubr() +
   xlab("Longitude") +
@@ -59,14 +67,50 @@ seak_area <- ggplot() +
         style = north_arrow_fancy_orienteering) + 
   geom_point(data = sites, aes(x = longitude, y = latitude, fill = Location), size = 5, 
         shape = 21) +
-  scale_fill_manual(values = c("#AAB8DC", "#BBEFBE")) +
-  theme(legend.position = "right")
+  scale_fill_manual(values = c("black", "white")) +
+  theme(legend.position = "right") + 
+  geom_rect(aes(xmin = -135.2, xmax = -134.1, ymin = 58.1, ymax = 58.8), fill = "transparent", color = "black") 
 seak_area
+```
+
+#Bridget Cove inset map 
+
+```{r}
+bc_inset <- ggplot() +
+  geom_sf(data = map_gshhs) + 
+  coord_sf(xlim = c(-135.2, -134.1), ylim = c(58.1, 58.8)) + 
+  geom_point(data = sites, aes(x = longitude, y = latitude, fill = Location), size = 5, 
+        shape = 21) +
+  scale_fill_manual(values = c("black", "white")) +
+  theme(legend.position = "none",
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+   theme(panel.background = element_rect(fill = "white"),
+        panel.ontop = FALSE)
+bc_inset
+```
+
+#SEAK map with inset
+
+```{r}
+fig1 <- ggdraw(seak_area) +
+  draw_plot(
+    {bc_inset
+      },
+    # The distance along a (0,1) x-axis to draw the left edge of the plot
+    x = 0.422, 
+    # The distance along a (0,1) y-axis to draw the bottom edge of the plot
+    y = 0.634,
+    # The width and height of the plot expressed as proportion of the entire ggdraw object
+    width = 0.35, 
+    height = 0.35) 
+fig1
 ```
 
 #save as jpeg
 
 ```{r}
 jpeg("../Figures/Fig1.jpg", width = 8, height = 5, units="in", res=600)
-seak_area
+fig1
 ```
