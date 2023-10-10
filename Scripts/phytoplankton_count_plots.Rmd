@@ -81,3 +81,51 @@ plot_5m
 jpeg("../Figures/Fig2.jpg", width = 8, height = 10, units="in", res=600)
 plot_net / plot_1m / plot_5m 
 ```
+
+#replace all zeros with NA in Alexandrium counts df
+
+```{r}
+alex_zero <- replace(alex, alex==0, NA)
+```
+
+#option 2 - same as plot above, but with zeros omitted 
+
+```{r}
+plot_net_zero <- ggplot(alex, aes(x = Date, y = Count_Net)) +
+  geom_point(size = 5, shape = 21, fill = "#BBEFBE") +
+  theme_pubr() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
+  labs(x = NULL, y = "Alexandrium in Net Tow (count)") +
+annotate("text", x=as.Date("2023-05-04"), y=30, label = "A", size = 5) 
+
+plot_1m_zero <- ggplot(alex, aes(x = Date, y = Count_1m_L)) +
+  geom_point(size = 5, shape = 21, fill = "#99DEDB") +
+  theme_pubr() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
+  labs(x = NULL, y = "Alexandrium at 1m (cells/L)") +
+annotate("text", x=as.Date("2023-05-04"), y=1500, label = "B", size = 5) 
+
+plot_5m_zero <- ggplot(alex, aes(x = Date, y = Count_5m_L)) +
+  geom_point(size = 5, shape = 21, fill = "#AAB8DC") +
+  theme_pubr() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
+  labs(x = NULL, y = "Alexandrium at 5m (cells/L)") +
+annotate("text", x=as.Date("2023-05-04"), y=1500, label = "C", size = 5) 
+
+jpeg("../Figures/Fig2_option2.jpg", width = 8, height = 10, units="in", res=600)
+plot_net_zero / plot_1m_zero / plot_5m_zero
+```
+
+#will need to restructure dataframe - long form so that counts are all in one column and methods are in another column?
+
+#option 3 - all methods (net, 1m, 5m) on same plot including zeros
+
+```{r}
+plot_all <- ggplot()
+```
+
+#option 4 - all methods (net, 1m, 5m) on same plot omitting zeros
+
+```{r}
+plot_all_zero <- ggplot()
+```
