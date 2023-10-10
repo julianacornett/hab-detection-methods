@@ -34,20 +34,21 @@ oyster_psts <- read.csv("../Data/Oyster_PSTs.csv")
 #put date in date format for timeseries
 
 ```{r}
-oyster_psts$Collection_Date <- as.Date(oyster_psts$Collection_Date, "%m/%d/%Y")
+oyster_psts$Date <- as.Date(oyster_psts$Date, "%m/%d/%Y")
 ```
 
 #timeseries plot (maybe add colored shading for when farm was shut down/testing above DEC levels? Or add in DEC levels in a different color?)
 
 ```{r}
-pst_plot <- ggplot(oyster_psts, aes(x = Collection_Date, y = Tox_ug_100g, fill = Method)) +
+pst_plot <- ggplot(oyster_psts, aes(x = Date, y = Tox_ug_100g, fill = Method)) +
   geom_point(size = 5, shape = 21) +
   scale_fill_manual(values = c("#FEF6A8", "#BC7BCC")) +
   theme_pubr() +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
   labs(x = NULL, y = "PSTs in Oyster Tissue (ug/100g)") +
     theme(legend.position = "right") +
-  geom_hline(yintercept = 80, linetype = 2)
+  geom_hline(yintercept = 80, linetype = "dashed") +
+  geom_hline(yintercept = 34, linetype = "dotted")
 pst_plot
 ```
 
