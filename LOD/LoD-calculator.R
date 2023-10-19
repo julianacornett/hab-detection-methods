@@ -1,3 +1,8 @@
+## Modified from: Merkes CM, Klymus KE, Allison MJ, Goldberg C, Helbing CC, Hunter ME, Jackson CA, 
+## Lance RF, Mangan AM, Monroe EM, Piaggio AJ, Stokdyk JP, Wilson CC, Richter C. (2019) Generic 
+## qPCR Limit of Detection (LOD) / Limit of Quantification (LOQ) calculator. R Script. Available 
+## at: https://github.com/cmerkes/qPCR_LOD_Calc. DOI: https://doi.org/10.5066/P9GT00GB. 
+
 ## Before getting started, please read the notes and personalize lines 17, 20, 23, 26,
 ##   and 33.  There are interactive codes, it is designed to be run using R studio 
 ##   where you can click on "source" after modifying lines 17, 20, 23, 26, and 33.
@@ -14,7 +19,7 @@ library(ggplot2)
 library(drc)
 
 ## Set your working directory to where your csv file is saved (MODIFY AS NEEDED):
-setwd("~/Desktop/Data/LoD/")
+setwd("~/Desktop/hab-detection-methods/LOD/")
 
 ## Read in your data file (MODIFY FILE NAME AS NEEDED):
 DAT <- read.csv("Data.csv")
