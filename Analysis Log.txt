@@ -1,0 +1,53 @@
+Analysis started: Thu Oct 19 13:41:03 2023
+
+
+WARNING: 12 data points excluded without a valid starting quantity (SQ)!
+Here is a sample of the data being excluded:
+
+"Well"	"Well.Position"	"Sample.Name"	"Target"	"Cq"	"SQ"
+85	"H1"	"NC"	"A.catenella"	NA	NA
+86	"H2"	"NC"	"A.catenella"	NA	NA
+87	"H3"	"NC"	"A.catenella"	NA	NA
+88	"H4"	"NC"	"A.catenella"	NA	NA
+89	"H5"	"NC"	"A.catenella"	NA	NA
+90	"H6"	"NC"	"A.catenella"	NA	NA
+
+
+Potential outliers have been detected. Please review the data exported as
+Potential-Outliers.csv, and determine if any data points need to be excluded
+or adjusted due to false positives or poorly normalized baselines.
+
+
+These standards not included in A.catenella standard curve regression for copy estimate calculations, because they detected below 50%: 20, 2, 0.2, NA
+
+
+Data Summary:
+"Standards"	"Target"	"Reps"	"Detects"	"Cq.mean"	"Cq.sd"	"Copy.CV"	"Cq.CV"	"Rate"
+2e+05	"A.catenella"	12	12	24.8089166666667	1.47425546437598	0.326233140014447	1.3569125419717	1
+20000	"A.catenella"	12	12	27.5901666666667	0.192049157217309	0.127973116440032	0.133710245327426	1
+2000	"A.catenella"	12	12	30.8975833333333	0.185635742215444	0.127154973806366	0.129207333035885	1
+200	"A.catenella"	12	12	34.4113333333333	0.627283368377023	0.351652628956046	0.456182305015006	1
+20	"A.catenella"	12	2	38.0455	0.222738636073766	0.155803459846725	0.155315275061181	0.166666666666667
+2	"A.catenella"	12	2	38.2345	0.256679761570716	0.17930649275199	0.179334145430832	0.166666666666667
+0.2	"A.catenella"	12	1	37.951	NA	NA	NA	0.0833333333333333
+
+
+For A.catenella, the lowest standard with 95% or greater detection is: 200 copies/reaction.
+
+Assay summary:
+
+R.squared: The R-squared value of linear regression of all standards Cq-values vs log10 of the starting quantities.
+Slope: The slope of the linear regression.
+Intercept: The y-intercept of the linear regression.
+
+Low.95: The lowest standard with at least 95% positive detection.
+LOD: The 95% limit of detection as determined by probit modeling.
+LOQ: The limit of quantification as determined by decay modeling, using the user-selected CV threshold of: 0.35
+
+rep2.LOD: The effective limit of detection if analyzing in 2 replicates.
+rep3.LOD: The effective limit of detection if analyzing in 3 replicates.
+rep4.LOD: The effective limit of detection if analyzing in 4 replicates.
+rep5.LOD: The effective limit of detection if analyzing in 5 replicates.
+rep8.LOD: The effective limit of detection if analyzing in 8 replicates.
+
+
