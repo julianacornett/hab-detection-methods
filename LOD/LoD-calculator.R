@@ -19,10 +19,10 @@ library(ggplot2)
 library(drc)
 
 ## Set your working directory to where your csv file is saved (MODIFY AS NEEDED):
-setwd("~/Desktop/hab-detection-methods/LOD/")
+#setwd("~/Desktop/hab-detection-methods/LOD/") don't need this since I have the script and data in same folder in RStudio
 
 ## Read in your data file (MODIFY FILE NAME AS NEEDED):
-DAT <- read.csv("Data.csv")
+DAT <- read.csv("2023.10.19_Alexandrium_standard_curve_results.csv")
 
 ## Define your CV threshold for LoQ:
 LOQ.Threshold <- 0.35
