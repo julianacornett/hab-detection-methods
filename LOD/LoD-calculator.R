@@ -22,7 +22,7 @@ library(drc)
 #setwd("~/Desktop/hab-detection-methods/LOD/") don't need this since I have the script and data in same folder in RStudio
 
 ## Read in your data file (MODIFY FILE NAME AS NEEDED):
-DAT <- read.csv("2023.10.19_Alexandrium_standard_curve_results.csv")
+DAT <- read.csv("C:/Users/Juliana.Cornett/Desktop/hab-detection-methods/LOD/Alexandrium_standard_curve_results.csv")
 
 ## Define your CV threshold for LoQ:
 LOQ.Threshold <- 0.35
