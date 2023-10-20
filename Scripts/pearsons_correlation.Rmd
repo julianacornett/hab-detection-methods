@@ -1,0 +1,67 @@
+---
+title: "pearsons_correlations"
+author: "Juliana Cornett"
+date: "2023-10-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Pearson's correlations
+
+#read in data
+
+```{r}
+oyster_psts <- read.csv("../Data/Oyster_PSTs.csv")
+alex <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
+```
+
+#PHYTOPLANKTON
+
+#Pearson's correlation between collection methods
+
+#calculate Pearson's correlation between 1m and 5m counts
+
+```{r}
+correlation_1m_5m <- cor.test(alex$Count_1m_L, alex$Count_5m_L, method = "pearson")
+correlation_1m_5m
+```
+
+#visualize relationship between 1m and 5m counts
+
+```{r}
+plot_1m_5m <- ggplot(alex, aes(Count_1m_L, Count_5m_L)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_1m_5m
+```
+
+#calculate Pearson's correlation between 1m and net tow
+
+```{r}
+correlation_1m_net <- cor.test(alex$Count_1m_L, alex$Count_Net, method = "pearson")
+correlation_1m_net
+```
+
+#visualize relationship between 1m and net tow
+
+```{r}
+plot_1m_net <- ggplot(alex, aes(Count_1m_L, Count_Net)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_1m_net
+```
+
+#calculate Pearson's correlation between 5m and net tow
+
+```{r}
+correlation_5m_net <- cor.test(alex$Count_5m_L, alex$Count_Net, method = "pearson")
+correlation_5m_net
+```
+
+#visualize relationship between 5m and net tow
+
+```{r}
+plot_5m_net <- ggplot(alex, aes(Count_5m_L, Count_Net)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_5m_net
+```
+
+#TOXINS
