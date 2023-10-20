@@ -29,12 +29,14 @@ library(ggpubr)
 
 ```{r}
 oyster_psts <- read.csv("../Data/Oyster_PSTs.csv")
+alex <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
 ```
 
-#put date in date format for timeseries
+#format dates
 
 ```{r}
 oyster_psts$Date <- as.Date(oyster_psts$Date, "%m/%d/%Y")
+alex$Date <- as.Date(alex$Date, "%m/%d/%Y")
 ```
 
 #timeseries plot (maybe add colored shading for when farm was shut down/testing above DEC levels? Or add in DEC levels in a different color?)
@@ -60,3 +62,59 @@ pst_plot
 ```
 
 #trying to figure out way to statistically correlate the ELISA and DEC toxin data, and potentially toxin data to Alexandrium abundance from microscope counts and eDNA. I'm having an issue though since the DEC data is technically categorical at <34 ug/100g (while the ELISA can go below that threshold and still be quantitative) and the dates don't align exactly. We have a few dates where the ELISA and DEC data are from the same day, but often it's different days from the same week. Potential options: 1) dataframe where each row is a week rather than date (although this wouldn't work for the handful of weeks where we have multiple DEC or ELISA measurements per week); 2) maybe ELISA vs. DEC is more of a visual comparison and we keep the figure as a way of seeing that on days where we have both measurements, they align fairly closely?; create table with % diff in methods for days when we have each... I don't think we'd want to use week for this since values can change w/in a week even for one method showing that uptake and/or depuration is happening more quickly than that. The hot 9/25 DEC sample is a bit of an outlier visually, but our closest ELISA before was 6 days prior and closest ELISA after (3 days later) was very close to the DEC value on the same day. 
+
+#correlation between ELISA and phytoplankton counts
+
+#subset psts df into ELISA only
+
+```{r}
+elisa_psts <- subset(oyster_psts, Method == "ELISA")
+```
+
+#join ELISAs df with alex count df where dates in alex count df are in ELISA df
+
+```{r}
+elisa_alex <- merge(elisa_psts, alex, by = "Date")
+```
+
+#calculate Pearson's correlation between net tow and ELISA
+
+```{r}
+correlation_elisa_net <- cor.test(elisa_alex$Tox_ug_100g, elisa_alex$Count_Net, method = "pearson")
+correlation_elisa_net
+```
+
+#visualize relationship between net tow and ELISA
+
+```{r}
+plot_elisa_net <- ggplot(elisa_alex, aes(Count_Net, Tox_ug_100g)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_elisa_net
+```
+
+#calculate Pearson's correlation between 1m and ELISA
+
+```{r}
+correlation_elisa_1m <- cor.test(elisa_alex$Tox_ug_100g, elisa_alex$Count_1m_L, method = "pearson")
+correlation_elisa_1m
+```
+
+#visualize relationship between 1m and ELISA
+
+```{r}
+plot_elisa_1m <- ggplot(elisa_alex, aes(Count_1m_L, Tox_ug_100g)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_elisa_1m
+```
+
+#calculate Pearson's correlation between 5m and ELISA
+
+```{r}
+correlation_elisa_5m <- cor.test(elisa_alex$Tox_ug_100g, elisa_alex$Count_5m_L, method = "pearson")
+correlation_elisa_5m
+```
+
+#visualize relationship between 5m and ELISA
+
+```{r}
+plot_elisa_5m <- ggplot(elisa_alex, aes(Count_5m_L, Tox_ug_100g)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_elisa_5m
+```
