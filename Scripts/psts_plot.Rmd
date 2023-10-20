@@ -58,3 +58,5 @@ pst_plot
 jpeg("../Figures/Fig4.jpg", width = 8, height = 5, units="in", res=600)
 pst_plot
 ```
+
+#trying to figure out way to statistically correlate the ELISA and DEC toxin data, and potentially toxin data to Alexandrium abundance from microscope counts and eDNA. I'm having an issue though since the DEC data is technically categorical at <34 ug/100g (while the ELISA can go below that threshold and still be quantitative) and the dates don't align exactly. We have a few dates where the ELISA and DEC data are from the same day, but often it's different days from the same week. Potential options: 1) dataframe where each row is a week rather than date (although this could cause issues for the handful of weeks where we have multiple DEC or ELISA measurements per week); 2) 
