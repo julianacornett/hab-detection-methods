@@ -23,6 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(ggplot2)
 library(ggpubr)
+library(viridis)
 ```
 
 #read in ELISA PSTs data
