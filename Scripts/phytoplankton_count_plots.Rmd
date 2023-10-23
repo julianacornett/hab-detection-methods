@@ -41,21 +41,20 @@ alex <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
 alex$Date <- as.Date(alex$Date, "%m/%d/%Y")
 ```
 
-#palette 
+#palettes
 
 ```{r}
-palette_alex <- hcl.colors(10, palette = "Dynamic")
+hcl.colors(5, palette = "Sunset")
 ```
-
 ```{r}
-"#DB9D85" "#C2A968" "#9DB469" "#6DBC86" "#3DBEAB" "#4CB9CC" "#87AEDF" "#BB9FE0" "#DA95CC" "#E494AB"
+"#704D9E" "#BC5AA9" "#ED7C97" "#F9B282" "#F3E79A"
 ```
 
 #net tow plot (A)
 
 ```{r}
 plot_net <- ggplot(alex, aes(x = Date, y = Count_Net)) +
-  geom_point(size = 5, shape = 21, fill = "#9DB469") +
+  geom_point(size = 5, shape = 21, fill = "#F9B282") +
   theme_pubr() +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
   labs(x = NULL, y = "Alexandrium in Net Tow (count)") +
@@ -67,7 +66,7 @@ plot_net
 
 ```{r}
 plot_1m <- ggplot(alex, aes(x = Date, y = Count_1m_L)) +
-  geom_point(size = 5, shape = 21, fill = "#3DBEAB") +
+  geom_point(size = 5, shape = 21, fill = "#ED7C97") +
   theme_pubr() +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
   labs(x = NULL, y = "Alexandrium at 1m (cells/L)") +
@@ -79,7 +78,7 @@ plot_1m
 
 ```{r}
 plot_5m <- ggplot(alex, aes(x = Date, y = Count_5m_L)) +
-  geom_point(size = 5, shape = 21, fill = "#87AEDF") +
+  geom_point(size = 5, shape = 21, fill = "#BC5AA9") +
   theme_pubr() +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
   labs(x = NULL, y = "Alexandrium at 5m (cells/L)") +
