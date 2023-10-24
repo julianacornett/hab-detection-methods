@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#code to generate plot of PST levels over the course of the summer (Figure 4 in manuscript?)
+#code to generate plot of PST levels over the course of the summer (Figure 3 in manuscript?)
 
 #install packages (ggplot2 & ggpubr for creating figure)
 
@@ -65,7 +65,7 @@ pst_plot
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig4.jpg", width = 8, height = 5, units="in", res=600)
+jpeg("../Figures/Fig3.jpg", width = 8, height = 5, units="in", res=600)
 pst_plot
 ```
 
