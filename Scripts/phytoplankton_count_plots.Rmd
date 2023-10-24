@@ -44,8 +44,9 @@ alex$Date <- as.Date(alex$Date, "%m/%d/%Y")
 #palettes
 
 ```{r}
-hcl.colors(5, palette = "Sunset")
+sunset_5 <- hcl.colors(5, palette = "Sunset")
 ```
+
 ```{r}
 "#704D9E" "#BC5AA9" "#ED7C97" "#F9B282" "#F3E79A"
 ```

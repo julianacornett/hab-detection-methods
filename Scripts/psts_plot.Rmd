@@ -39,7 +39,15 @@ oyster_psts$Date <- as.Date(oyster_psts$Date, "%m/%d/%Y")
 alex$Date <- as.Date(alex$Date, "%m/%d/%Y")
 ```
 
-#timeseries plot (maybe add colored shading for when farm was shut down/testing above DEC levels? Or add in DEC levels in a different color?)
+```{r}
+sunset_5 <- hcl.colors(5, palette = "Sunset")
+```
+
+```{r}
+"#704D9E" "#BC5AA9" "#ED7C97" "#F9B282" "#F3E79A"
+```
+
+#timeseries plot 
 
 ```{r}
 pst_plot <- ggplot(oyster_psts, aes(x = Date, y = Tox_ug_100g, fill = Method)) +

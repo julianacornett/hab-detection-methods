@@ -11,11 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #code to generate qPCR plots (Figure(s) __ in manuscript)
 
-#install packages (ggplot2 & ggpubr for creating figures)
+#install packages (ggplot2 & ggpubr for creating figures; dplyr and reshape2 for data manipulation)
 
 ```{r}
 #install.packages("ggplot2")
 #install.packages("ggpubr")
+#install.packages("dplyr")
+#install.packages("reshape2")
 ```
 
 #load libraries
@@ -23,6 +25,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(ggplot2)
 library(ggpubr)
+library(dplyr)
+library(reshape2)
 ```
 
 #read in qPCR data
@@ -35,6 +39,10 @@ qpcr <- read.csv("../Data/Alexandrium_qPCR_Results.csv")
 
 ```{r}
 qpcr$Date <- as.Date(qpcr$Date, "%m/%d/%Y")
+qpcr$Quantity_1 <- as.numeric(qpcr_Quantity_1)
+qpcr$Quantity_2 <- as.numeric(qpcr_Quantity_2)
+qpcr$Quantity_3 <- as.numeric(qpcr_Quantity_3)
+qpcr$Quantity_Mean <- as.numeric(qpcr_Quantity_Mean)
 ```
 
 ```{r}
@@ -44,19 +52,47 @@ qpcr_na <- qpcr[-which(qpcr$Quantity_Mean == ""), ]
 #palettes
 
 ```{r}
-hcl.colors(50, palette = "Sunset")
+sunset_25 <- hcl.colors(25, palette = "Sunset")
 ```
 
 ```{r}
-"#704D9E" "#BC5AA9" "#ED7C97" "#F9B282" "#F3E79A"
+"#704D9E" "#7F4EA2" "#8D4FA5" "#9A51A7" "#A653A8" "#B156A9" "#BC5AA9" "#C65EA8" "#CF63A6" "#D868A3" "#E06EA0" "#E7759C" "#ED7C97" "#F18592" "#F48E8E" "#F6978A" "#F7A086" "#F9A983" "#F9B282" "#F9BB81" "#F9C483" "#F8CD86" "#F6D68A" "#F5DE91" "#F3E79A"
+```
+
+#bar plot
+```{r}
+qpcr
 ```
 
 ```{r}
-plot_qpcr <- ggplot(qpcr_na, aes(y = Quantity_Mean, x = Date)) +
+plot_qpcr_bar <- ggplot(qpcr, aes(x = Date, y = Quantity_Mean, fill = Date)) +
+  geom_point(aes(y = Quantity_Mean)) + 
+  labs(y = "values and median")
+plot_qpcr_bar
+```
+
+```{r}
+
+```
+
+#subset to date and quantity columns only
+
+```{r}
+qpcr_sub <- select(qpcr, c("Date", "Quantity_1", "Quantity_2", "Quantity_3"))
+```
+
+#gather into long form
+
+```{r}
+qpcr_sub_long <- melt(qpcr_sub, id.vars = "Date", variable.name = "Quantity")
+qpcr_sub_long
+```
+
+```{r}
+qpcr_bar <- ggplot(qpcr_sub_long, aes(y=value, x=Date)) +
   geom_point() +
+  ylab("Quantity") +
   theme_pubr() +
-  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
-  labs(x = NULL, y = "Alexandrium (copies per L)")
-plot_qpcr
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")
+qpcr_bar
 ```
-
