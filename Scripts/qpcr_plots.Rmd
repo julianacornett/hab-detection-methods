@@ -111,6 +111,8 @@ plot_qpcr_scatter
 count_micro <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
 ```
 
+#subset to only ID and count data
+
 ```{r}
 count_sub <- select(count_micro, c("ID_yyyymmdd", "Count_1m_L", "Count_5m_L"))
 ```
@@ -121,17 +123,40 @@ count_sub <- select(count_micro, c("ID_yyyymmdd", "Count_1m_L", "Count_5m_L"))
 count_long <- melt(count_sub, id.vars = "ID_yyyymmdd", variable.name = "Method")
 ```
 
+#select only ID_yyyymmdd & Cells_L from eDNA sample-only dataframe
+
+```{r}
+qpcr_samp_sub <- select(qpcr_samp, c("ID_yyyymmdd", "Cells_L"))
+```
+
+#add "Method" column filled with "qPCR"
+
+```{r}
+qpcr_samp_sub$Method <- "qPCR"
+```
+
+#rename Cells_L to "value" to match
+
+```{r}
+qpcr_samp_sub <- qpcr_samp_sub %>% rename("value" = "Cells_L")
+qpcr_samp_sub
+```
+
+#append to long-form microscope count df
+
+```{r}
+count_qpcr <- rbind(count_long, qpcr_samp_sub)
+```
+
 #plot
 
 ```{r}
 pal <-  hcl.colors(3, palette = "Sunset")
-labs_method <- c("5m bottle sample", "1m bottle sample")
 
-plot_qpcr_raincloud <- ggplot(count_long, aes(x = factor(Method), y = value)) + 
+plot_qpcr_raincloud <- ggplot(count_qpcr, aes(x = factor(Method), y = value)) + 
   ggdist::stat_halfeye(
     aes(color = Method,
-        fill = after_scale(lighten(color, .5))),
-    adjust = .5, 
+        fill = after_scale(lighten(color, .5))), adjust = .5, 
     width = .75, 
     .width = 0,
     justification = -.4, 
@@ -186,7 +211,7 @@ plot_qpcr_raincloud <- ggplot(count_long, aes(x = factor(Method), y = value)) +
     axis.title.x = element_text(margin = margin(t = 10),
                                 size = 10)
   ) +
-  scale_x_discrete(labels=c("Count_5m_L" = "Microscope (5m)", "Count_1m_L" = "Microscope (1m)"))
+  scale_x_discrete(labels=c("qPCR" = "qPCR (2m)", "Count_5m_L" = "Microscope (5m)", "Count_1m_L" = "Microscope (1m)"))
 plot_qpcr_raincloud
 ```
 
