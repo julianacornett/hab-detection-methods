@@ -11,13 +11,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #code to generate qPCR plots (Figure(s) __ in manuscript)
 
-#install packages (ggplot2 & ggpubr for creating figures; dplyr and reshape2 for data manipulation)
+#install packages (ggplot2 & ggpubr for creating figures; dplyr and reshape2 for data manipulation, ggdist for violin plot)
 
 ```{r}
 #install.packages("ggplot2")
 #install.packages("ggpubr")
 #install.packages("dplyr")
 #install.packages("reshape2")
+#install.packages("ggdist")
 ```
 
 #load libraries
@@ -27,9 +28,10 @@ library(ggplot2)
 library(ggpubr)
 library(dplyr)
 library(reshape2)
+library(ggdist)
 ```
 
-#read in qPCR data
+#read in qPCR data 
 
 ```{r}
 qpcr <- read.csv("../Data/Alexandrium_qPCR_Results.csv")
@@ -86,6 +88,30 @@ plot_qpcr_scatter
 ```
 
 #raincloud plot
+
+#read in microscope data
+
+```{r}
+count_micro <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
+```
+
+```{r}
+count_sub <- select(count_micro, c("ID_yyyymmdd", "Count_1m_L", "Count_5m_L"))
+```
+
+#gather into long form
+
+```{r}
+count_long <- melt(count_sub, id.vars = "ID_yyyymmdd", variable.name = "Method")
+```
+
+```{r}
+ggplot(count_long, aes(x = factor(Method), y = value, fill = factor(Method))) +
+  stat_halfeye(adjust = 0.5, justification = -0.2, .width = 0, point_colour = NA) +
+  geom_boxplot(width = 0.12, outlier.color = NA, alpha = 0.5) +
+  stat_dots(side = "left", justification = 1.1, binwidth = 25) +
+  theme_pubr()
+```
 
 #save as jpeg
 
