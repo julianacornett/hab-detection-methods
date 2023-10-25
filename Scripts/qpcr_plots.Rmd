@@ -19,6 +19,9 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages("dplyr")
 #install.packages("reshape2")
 #install.packages("ggdist")
+#install.packages("ggtext")
+#install.packages("colorspace")
+#install.packages("ragg")
 ```
 
 #load libraries
@@ -29,6 +32,9 @@ library(ggpubr)
 library(dplyr)
 library(reshape2)
 library(ggdist)
+library(ggtext)
+library(colorspace)
+library(ragg)
 ```
 
 #read in qPCR data 
@@ -105,14 +111,78 @@ count_sub <- select(count_micro, c("ID_yyyymmdd", "Count_1m_L", "Count_5m_L"))
 count_long <- melt(count_sub, id.vars = "ID_yyyymmdd", variable.name = "Method")
 ```
 
+#plot
+
 ```{r}
-ggplot(count_long, aes(x = factor(Method), y = value, fill = factor(Method))) +
-  stat_halfeye(adjust = 0.5, justification = -0.2, .width = 0, point_colour = NA) +
-  geom_boxplot(width = 0.12, outlier.color = NA, alpha = 0.5) +
-  stat_dots(side = "left", justification = 1.1, binwidth = 25) +
-  theme_pubr()
+pal <-  hcl.colors(3, palette = "Sunset")
+labs_method <- c("5m bottle sample", "1m bottle sample")
+
+plot_qpcr_raincloud <- ggplot(count_long, aes(x = factor(Method), y = value)) + 
+  ggdist::stat_halfeye(
+    aes(color = Method,
+        fill = after_scale(lighten(color, .5))),
+    adjust = .5, 
+    width = .75, 
+    .width = 0,
+    justification = -.4, 
+    point_color = NA) + 
+  geom_boxplot(
+    aes(color = Method,
+        color = after_scale(darken(color, .1, space = "HLS")),
+        fill = after_scale(desaturate(lighten(color, .8), .4))),
+    width = .42, 
+    outlier.shape = NA
+  ) +
+  geom_point(
+    aes(color = Method,
+        color = after_scale(darken(color, .1, space = "HLS"))),
+    fill = "white",
+    shape = 21,
+    stroke = .4,
+    size = 2,
+    position = position_jitter(seed = 1, width = .12)
+  ) + 
+  geom_point(
+    aes(fill = Method),
+    color = "transparent",
+    shape = 21,
+    stroke = .4,
+    size = 2,
+    alpha = .3,
+    position = position_jitter(seed = 1, width = .12)) + 
+  stat_summary(
+    geom = "text",
+    fun = "median",
+    aes(label = round(..y.., 2),
+        color = Method,
+        color = after_scale(darken(color, .1, space = "HLS"))),
+    fontface = "bold",
+    size = 3.5,
+    vjust = -3.75
+  ) +
+  coord_flip() +
+  scale_color_manual(values = pal, guide = "none") +
+  scale_fill_manual(values = pal, guide = "none") +
+  labs(
+    x = NULL,
+    y = "Alexandrium count (cells/L)"
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text.y = element_text(size = 10),
+    axis.title.x = element_text(margin = margin(t = 10),
+                                size = 10)
+  ) +
+  scale_x_discrete(labels=c("Count_5m_L" = "Microscope (5m)", "Count_1m_L" = "Microscope (1m)"))
+plot_qpcr_raincloud
 ```
 
 #save as jpeg
 
-
+```{r}
+jpeg("../Figures/Fig5.jpg", width = 8, height = 5, units="in", res=600)
+plot_qpcr_raincloud
+```
