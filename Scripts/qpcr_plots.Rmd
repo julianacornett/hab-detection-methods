@@ -146,41 +146,41 @@ count_micro <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
 #subset to only ID and count data
 
 ```{r}
-count_sub <- select(count_micro, c("ID_yyyymmdd", "Count_1m_L", "Count_5m_L"))
+count_sub <- select(count_micro, c("Date", "Count_1m_L", "Count_5m_L"))
 ```
 
 #gather into long form
 
 ```{r}
-count_long <- melt(count_sub, id.vars = "ID_yyyymmdd", variable.name = "Method")
+count_long <- melt(count_sub, id.vars = "Date", variable.name = "Method")
 ```
 
 #select only ID_yyyymmdd & Cells_L from eDNA sample-only dataframe
 
 ```{r}
-qpcr_samp_sub <- select(qpcr_samp, c("ID_yyyymmdd", "Cells_L"))
+qpcr_sub <- select(Quant_dailyMean, c("Date", "Quantity_Mean"))
 ```
 
 #add "Method" column filled with "qPCR"
 
 ```{r}
-qpcr_samp_sub$Method <- "qPCR"
+qpcr_sub$Method <- "qPCR"
 ```
 
 #rename Cells_L to "value" to match
 
 ```{r}
-qpcr_samp_sub <- qpcr_samp_sub %>% rename("value" = "Cells_L")
+qpcr_sub <- qpcr_sub %>% rename("value" = "Quantity_Mean")
 ```
 
 ```{r}
-qpcr_samp_sub$value <- as.integer(qpcr_samp_sub$value)
+qpcr_sub$value <- as.integer(qpcr_sub$value)
 ```
 
 #append to long-form microscope count df
 
 ```{r}
-count_qpcr <- rbind(count_long, qpcr_samp_sub)
+count_qpcr <- rbind(count_long, qpcr_sub)
 ```
 
 #plot
