@@ -262,6 +262,8 @@ ggplot(count_qpcr, aes(x = Method, y = value, fill = Method, color = Method)) +
   theme_pubr()
 ```
 
+#need to find way to have 2 y-axes
+
 #save as jpeg
 
 ```{r}
