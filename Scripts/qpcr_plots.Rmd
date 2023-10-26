@@ -69,14 +69,6 @@ qpcr_samp <- subset(qpcr, qpcr$Sample_Type == "Sample")
 #palettes
 
 ```{r}
-sunset_25 <- hcl.colors(25, palette = "Sunset")
-```
-
-```{r}
-"#704D9E" "#7F4EA2" "#8D4FA5" "#9A51A7" "#A653A8" "#B156A9" "#BC5AA9" "#C65EA8" "#CF63A6" "#D868A3" "#E06EA0" "#E7759C" "#ED7C97" "#F18592" "#F48E8E" "#F6978A" "#F7A086" "#F9A983" "#F9B282" "#F9BB81" "#F9C483" "#F8CD86" "#F6D68A" "#F5DE91" "#F3E79A"
-```
-
-```{r}
 sunset_5 <- hcl.colors(5, palette = "Sunset")
 ```
 
@@ -139,7 +131,10 @@ qpcr_samp_sub$Method <- "qPCR"
 
 ```{r}
 qpcr_samp_sub <- qpcr_samp_sub %>% rename("value" = "Cells_L")
-qpcr_samp_sub
+```
+
+```{r}
+qpcr_samp_sub$value <- as.integer(qpcr_samp_sub$value)
 ```
 
 #append to long-form microscope count df
@@ -160,7 +155,8 @@ plot_qpcr_raincloud <- ggplot(count_qpcr, aes(x = factor(Method), y = value)) +
     width = .75, 
     .width = 0,
     justification = -.4, 
-    point_color = NA) + 
+    point_color = NA,
+    normalize = "groups") + 
   geom_boxplot(
     aes(color = Method,
         color = after_scale(darken(color, .1, space = "HLS")),
@@ -218,6 +214,6 @@ plot_qpcr_raincloud
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig5.jpg", width = 8, height = 5, units="in", res=600)
-plot_qpcr_raincloud
+#jpeg("../Figures/Fig5.jpg", width = 8, height = 5, units="in", res=600)
+#plot_qpcr_raincloud
 ```
