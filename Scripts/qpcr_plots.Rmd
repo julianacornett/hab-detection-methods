@@ -191,7 +191,7 @@ plot_qpcr_raincloud <- ggplot(count_qpcr, aes(x = factor(Method), y = value)) +
     size = 3.5,
     vjust = -3.75
   ) +
-  coord_flip() +
+#  coord_flip() +
   scale_color_manual(values = pal, guide = "none") +
   scale_fill_manual(values = pal, guide = "none") +
   labs(
@@ -209,6 +209,17 @@ plot_qpcr_raincloud <- ggplot(count_qpcr, aes(x = factor(Method), y = value)) +
   ) +
   scale_x_discrete(labels=c("qPCR" = "qPCR (2m)", "Count_5m_L" = "Microscope (5m)", "Count_1m_L" = "Microscope (1m)"))
 plot_qpcr_raincloud
+```
+```{r}
+pal <-  hcl.colors(3, palette = "Sunset")
+
+ggplot(count_qpcr, aes(x = Method, y = value, fill = Method, color = Method)) + 
+  scale_fill_manual(values = pal) +
+  scale_color_manual(values = pal) +
+  ggdist::stat_halfeye(adjust = .5, width = .7, .width = 0, justification = -.2, point_colour = NA, normalize = "groups") + 
+  geom_boxplot(width = .2, outlier.shape = NA, alpha = 0.5) + 
+  geom_jitter(width = .05, shape = 21) +
+  theme_pubr()
 ```
 
 #save as jpeg
