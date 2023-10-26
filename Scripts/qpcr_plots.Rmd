@@ -47,11 +47,6 @@ qpcr <- read.csv("../Data/Alexandrium_qPCR_Results.csv")
 
 ```{r}
 qpcr$Date <- as.Date(qpcr$Date, "%m/%d/%Y")
-qpcr$Quantity_1 <- as.numeric(gsub(",", "", qpcr$Quantity_1))
-qpcr$Quantity_2 <- as.numeric(gsub(",", "", qpcr$Quantity_2))
-qpcr$Quantity_3 <- as.numeric(gsub(",", "", qpcr$Quantity_3))
-qpcr$Quantity_Mean <- as.numeric(gsub(",", "", qpcr$Quantity_Mean))
-qpcr$Cells_L <- as.numeric(gsub(",", "", qpcr$Cells_L))
 ```
 
 #extract month 
@@ -66,32 +61,59 @@ qpcr$Month <- format(as.Date(qpcr$Date, format="%d/%m/%Y"),"%b")
 qpcr_samp <- subset(qpcr, qpcr$Sample_Type == "Sample")
 ```
 
+#create new df with daily mean quantity
+
+```{r}
+Quant_dailyMean <- aggregate(Quantity_Mean ~ ID_yyyymmdd, data = qpcr_samp, FUN = mean)
+```
+
+#extract month 
+
+```{r}
+Quant_dailyMean$Month <- format(as.Date(Quant_dailyMean$Date, format="%d/%m/%Y"),"%b")
+```
+
 #palettes
 
 ```{r}
 sunset_5 <- hcl.colors(5, palette = "Sunset")
 ```
 
+```{r}
+hcl.colors(25, palette = "Sunset")  "#704D9E" "#7F4EA2" "#8D4FA5" "#9A51A7" "#A653A8" "#B156A9" "#BC5AA9" "#C65EA8" "#CF63A6" "#D868A3" "#E06EA0" "#E7759C" "#ED7C97" "#F18592"
+[15] "#F48E8E" "#F6978A" "#F7A086" "#F9A983" "#F9B282" "#F9BB81" "#F9C483" "#F8CD86" "#F6D68A" "#F5DE91" "#F3E79A"
+``` 
+
 #scatterplot
 
 ```{r}
 qpcr_samp$Month <- factor(qpcr_samp$Month, levels = c("May", "Jun", "Jul", "Aug", "Sep"))
 
-plot_qpcr_scatter <- ggplot(qpcr_samp, aes(x = Date, y = Quantity_Mean)) +
+#add shading for time when farm was testing >80 ug/100g at DEC (6/6/23-7/7/23; 9/25/23-9/28/23) 
+plot_qpcr_scatter_dec <- ggplot(qpcr_samp, aes(x = Date, y = Quantity_Mean)) +
   geom_point(aes(y = Quantity_Mean, fill = Month), size = 5, shape = 21) + 
   scale_fill_manual(values = sunset_5) +
-  labs(y = "Copy number (log-transformed)") + 
+  labs(y = "Quantity (log10)") + 
   theme_pubr() +
   theme(legend.position = "right") +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
-  scale_y_continuous(trans="log10")
-plot_qpcr_scatter
+  scale_y_continuous(trans="log10") + 
+  annotate("rect",
+           xmin=as.Date("2023-06-06"), xmax=as.Date("2023-06-19"), ymin = 0, ymax=Inf, fill = "#704D9E", alpha=.25) + 
+  annotate("rect",
+           xmin=as.Date("2023-06-24"), xmax=as.Date("2023-07-07"), ymin = 0, ymax=Inf, fill = "#704D9E", alpha=.25) + 
+  annotate("rect",
+           xmin=as.Date("2023-09-25"), xmax=as.Date("2023-09-28"), ymin = 0, ymax=Inf, fill = "#704D9E", alpha=.25) +
+  annotate("text", x=as.Date("2023-05-01"), y=1e+06, label = "A", size = 5)
+plot_qpcr_scatter_dec
+
+#add shading for time when farm was testing >80 ug/100g at DEC (6/6/23-7/7/23; 9/25/23-9/28/23)
 ```
 
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig4.jpg", width = 8, height = 5, units="in", res=600)
+jpeg("../Figures/Fig4.jpg", width = 8, height = 10, units="in", res=600)
 plot_qpcr_scatter
 ```
 
