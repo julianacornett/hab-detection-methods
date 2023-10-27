@@ -110,12 +110,3 @@ correlation_elisa_5m
 plot_elisa_5m <- ggplot(elisa_alex, aes(Count_5m_L, Tox_ug_100g)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
 plot_elisa_5m
 ```
-
-#ANOVAs between DEC tox categories and other variables
-
-#create new categorical column in tox data with 3 values: 1) <34 ug/100g, 2) >34 and <80 ug/100g, 3) >80 ug/100g
-
-```{r}
-
-```
-
