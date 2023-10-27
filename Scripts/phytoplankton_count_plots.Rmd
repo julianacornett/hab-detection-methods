@@ -41,10 +41,10 @@ alex <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
 alex$Date <- as.Date(alex$Date, "%m/%d/%Y")
 ```
 
-#create new categorical column - presence/absence in net tow 
+#create new categorical column - presence/absence in net tow as alpha values
 
 ```{r}
-
+alex$Presence_NetTow <- ifelse(alex$Count_Net==0, "No", "Yes")
 ```
 
 #palettes
@@ -57,27 +57,19 @@ sunset_5 <- hcl.colors(5, palette = "Sunset")
 "#704D9E" "#BC5AA9" "#ED7C97" "#F9B282" "#F3E79A"
 ```
 
-#net tow plot (A)
-
-```{r}
-plot_net <- ggplot(alex, aes(x = Date, y = Count_Net)) +
-  geom_point(size = 5, shape = 21, fill = "#F9B282") +
-  theme_pubr() +
-  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
-  labs(x = NULL, y = "Alexandrium in Net Tow (count)") +
-annotate("text", x=as.Date("2023-05-04"), y=30, label = "A", size = 5) 
-plot_net
-```
-
-#1m plot (B) - shape as presence/absence in net tow
+#1m plot (A) - shaded as presence/absence in net tow
 
 ```{r}
 plot_1m <- ggplot(alex, aes(x = Date, y = Count_1m_L)) +
-  geom_point(size = 5, shape = 21, fill = "#ED7C97") +
+  geom_point(size = 5, shape = 21, fill = "#F9B282") +
   theme_pubr() +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
   labs(x = NULL, y = "Alexandrium at 1m (cells/L)") +
-annotate("text", x=as.Date("2023-05-04"), y=1500, label = "B", size = 5) 
+annotate("text", x=as.Date("2023-05-04"), y=1500, label = "A", size = 5) +
+annotate("rect", xmin=as.Date("2023-05-13"), xmax=as.Date("2023-05-17"), ymin = 0, ymax=Inf, fill = "#F9B282", alpha = 0.25) +
+annotate("rect", xmin=as.Date("2023-06-04"), xmax=as.Date("2023-06-15"), ymin = 0, ymax=Inf, fill = "#F9B282", alpha = 0.25) +
+annotate("rect", xmin=as.Date("2023-06-24"), xmax=as.Date("2023-07-07"), ymin = 0, ymax=Inf, fill = "#F9B282", alpha = 0.25) +
+annotate("rect", xmin=as.Date("2023-08-13"), xmax=as.Date("2023-08-17"), ymin = 0, ymax=Inf, fill = "#F9B282", alpha = 0.25)
 plot_1m
 ```
 
@@ -85,11 +77,15 @@ plot_1m
 
 ```{r}
 plot_5m <- ggplot(alex, aes(x = Date, y = Count_5m_L)) +
-  geom_point(size = 5, shape = 21, fill = "#BC5AA9") +
+  geom_point(size = 5, shape = 21, fill = "#ED7C97") +
   theme_pubr() +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
   labs(x = NULL, y = "Alexandrium at 5m (cells/L)") +
-annotate("text", x=as.Date("2023-05-04"), y=1500, label = "C", size = 5) 
+annotate("text", x=as.Date("2023-05-04"), y=1500, label = "B", size = 5) +
+annotate("rect", xmin=as.Date("2023-05-13"), xmax=as.Date("2023-05-17"), ymin = 0, ymax=Inf, fill = "#ED7C97", alpha = 0.25) +
+annotate("rect", xmin=as.Date("2023-06-04"), xmax=as.Date("2023-06-15"), ymin = 0, ymax=Inf, fill = "#ED7C97", alpha = 0.25) +
+annotate("rect", xmin=as.Date("2023-06-24"), xmax=as.Date("2023-07-07"), ymin = 0, ymax=Inf, fill = "#ED7C97", alpha = 0.25) +
+annotate("rect", xmin=as.Date("2023-08-13"), xmax=as.Date("2023-08-17"), ymin = 0, ymax=Inf, fill = "#ED7C97", alpha = 0.25)
 plot_5m
 ```
 
