@@ -34,6 +34,7 @@ library(tidyr)
 library(reshape2)
 library(patchwork)
 library(ggstream)
+source("https://gist.github.com/ellisp/4002241def4e2b360189e58c3f461b4a/raw/0e5dc52262e86b5d21b914db3553e58b0b8d1d20/dualplot.R")     
 ```
 
 #read in qPCR data 
@@ -109,7 +110,8 @@ plot_qpcr_scatter_dec <- ggplot(qpcr_sub, aes(x = Date, y = Quantity_Mean)) +
            xmin=as.Date("2023-06-24"), xmax=as.Date("2023-07-07"), ymin = 0, ymax=Inf, fill = "#F3E79A", alpha=.35) + 
   annotate("rect",
            xmin=as.Date("2023-09-25"), xmax=as.Date("2023-09-28"), ymin = 0, ymax=Inf, fill = "#F3E79A", alpha=.35) +
-  annotate("text", x=as.Date("2023-05-01"), y=1e+06, label = "A", size = 5)
+  annotate("text", x=as.Date("2023-05-01"), y=1e+06, label = "A", size = 5) +
+  theme(axis.title.x = element_blank()) 
 plot_qpcr_scatter_dec
 
 #add shading for time when farm was testing >80 ug/100g w/ ELISAs (6/6/23-7/10/23; 7/18/23-7/24/23)
@@ -125,7 +127,8 @@ plot_qpcr_scatter_elisa <- ggplot(qpcr_sub, aes(x = Date, y = Quantity_Mean)) +
            xmin=as.Date("2023-06-06"), xmax=as.Date("2023-07-10"), ymin = 0, ymax=Inf, fill = "#704D9E", alpha=.25) + 
   annotate("rect",
            xmin=as.Date("2023-07-18"), xmax=as.Date("2023-07-24"), ymin = 0, ymax=Inf, fill = "#704D9E", alpha=.25) + 
-  annotate("text", x=as.Date("2023-05-01"), y=1e+06, label = "B", size = 5)
+  annotate("text", x=as.Date("2023-05-01"), y=1e+06, label = "B", size = 5) +
+  theme(axis.title.x = element_blank()) 
 plot_qpcr_scatter_elisa
 
 ```
@@ -223,37 +226,34 @@ plot_q_elisa
 #Figure of count data (1m, 5m) on one y-axis and qpcr count data on other y-axis 
 
 ```{r}
-ggplot(merge_all, aes(x=Date)) +
+coeff <- 100
+
+count_plot <- ggplot(merge_all, aes(x=Date)) +
   
-  geom_point( aes(y=Count_1m_L), color = "#F564E3", size = 3) + 
-  geom_point( aes(y=Count_5m_L), color = "#00BFC4", size = 3) +
-  
+  geom_line( aes(y=Count_1m_L), color = "#F9B282", size = 3, alpha = 0.75) + 
+  geom_line( aes(y=Count_5m_L), color = "#ED7C97", size = 3, alpha = 0.75) +
+  geom_line( aes(y=Quantity_Mean / coeff), color = "#BC5AA9", size = 3, alpha = 0.75) + 
   scale_y_continuous(
-    
-    # Features of the first axis
-    name = "Water Temperature at 1m (C)",
-    
-    # Add a second axis and specify its features
-    sec.axis = dup_axis(name = "Salinity at 1m (ppt)") 
+    name = "Alexandrium count (cells/L)",
+    sec.axis = sec_axis(~.*coeff, name="Alexandrium quantity (copy number/L)")
   ) +
   theme_pubr() +
-  scale_x_date(date_breaks = "4 months", date_labels = "%b %Y") + 
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") + 
   theme(
-    axis.title.y = element_text(color = "#F564E3"),
-    axis.title.y.right = element_text(color = "#00BFC4"),
-     axis.title.x = element_blank()) + 
-  annotate("rect",
-           xmin=as.Date("2022-05-04"), xmax=as.Date("2022-10-03"), ymin = 0, ymax=Inf, fill = "gray", alpha=.5) +
-  annotate("text",
-           x=as.Date("2021-01-01"), y=35, label = "A", size = 6)
-
-temp_sal_plot_21_22
+    axis.title.y = element_text(color = "#F48E8E"),
+    axis.title.y.right = element_text(color = "#BC5AA9"),
+     axis.title.x = element_blank()) +
+  annotate("text", x=as.Date("2023-06-18"), y=2600, label = "2m qPCR", size = 4, color = "#BC5AA9") +
+  annotate("text", x=as.Date("2023-07-22"), y=1300, label = "1m microscope", size = 4, color = "#F9B282") +
+  annotate("text", x=as.Date("2023-08-05"), y=1000, label = "5m microscope", size = 4, color = "#ED7C97")
+count_plot
 ```
 
 #save as jpeg
 
 ```{r}
-#jpeg("../Figures/Fig5.jpg", width = 8, height = 5, units="in", res=600)
+jpeg("../Figures/Fig5.jpg", width = 8, height = 5, units="in", res=600)
+count_plot
 ```
 
 #Figure w/ qpcr and count data regressions vs. ELISA tox data
