@@ -69,8 +69,6 @@ jpeg("../Figures/Fig3.jpg", width = 8, height = 5, units="in", res=600)
 pst_plot
 ```
 
-#trying to figure out way to statistically correlate the ELISA and DEC toxin data, and potentially toxin data to Alexandrium abundance from microscope counts and eDNA. I'm having an issue though since the DEC data is technically categorical at <34 ug/100g (while the ELISA can go below that threshold and still be quantitative) and the dates don't align exactly. We have a few dates where the ELISA and DEC data are from the same day, but often it's different days from the same week. Potential options: 1) dataframe where each row is a week rather than date (although this wouldn't work for the handful of weeks where we have multiple DEC or ELISA measurements per week); 2) maybe ELISA vs. DEC is more of a visual comparison and we keep the figure as a way of seeing that on days where we have both measurements, they align fairly closely?; create table with % diff in methods for days when we have each... I don't think we'd want to use week for this since values can change w/in a week even for one method showing that uptake and/or depuration is happening more quickly than that. The hot 9/25 DEC sample is a bit of an outlier visually, but our closest ELISA before was 6 days prior and closest ELISA after (3 days later) was very close to the DEC value on the same day. 
-
 #correlation between ELISA and phytoplankton counts
 
 #subset psts df into ELISA only
@@ -126,3 +124,12 @@ correlation_elisa_5m
 plot_elisa_5m <- ggplot(elisa_alex, aes(Count_5m_L, Tox_ug_100g)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
 plot_elisa_5m
 ```
+
+#ANOVAs between DEC tox categories and other variables
+
+#create new categorical column in tox data with 3 values: 1) <34 ug/100g, 2) >34 and <80 ug/100g, 3) >80 ug/100g
+
+```{r}
+
+```
+

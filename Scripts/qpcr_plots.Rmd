@@ -11,17 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #code to generate qPCR plots (Figure(s) __ in manuscript)
 
-#install packages (ggplot2 & ggpubr for creating figures; dplyr and reshape2 for data manipulation, ggdist for violin plot)
+#install packages (ggplot2, ggpubr and patchwork for creating figures; dplyr and reshape2 for data manipulation)
 
 ```{r}
 #install.packages("ggplot2")
 #install.packages("ggpubr")
 #install.packages("dplyr")
 #install.packages("reshape2")
-#install.packages("ggdist")
-#install.packages("ggtext")
-#install.packages("colorspace")
-#install.packages("ragg")
 #install.packages("patchwork")
 ```
 
@@ -32,10 +28,6 @@ library(ggplot2)
 library(ggpubr)
 library(dplyr)
 library(reshape2)
-library(ggdist)
-library(ggtext)
-library(colorspace)
-library(ragg)
 library(patchwork)
 ```
 
@@ -63,10 +55,16 @@ qpcr$Month <- format(as.Date(qpcr$Date, format="%d/%m/%Y"),"%b")
 qpcr_samp <- subset(qpcr, qpcr$Sample_Type == "Sample")
 ```
 
+#subset to remove values below LOD/LOQ (63.98 copies)
+
+```{r}
+qpcr_sub <- subset(qpcr_samp, qpcr_samp$Quantity_Mean >= 63.98)
+```
+
 #create new df with daily mean quantity
 
 ```{r}
-Quant_dailyMean <- aggregate(Quantity_Mean ~ ID_yyyymmdd, data = qpcr_samp, FUN = mean)
+Quant_dailyMean <- aggregate(Quantity_Mean ~ Date, data = qpcr_sub, FUN = mean)
 ```
 
 #extract month 
@@ -89,10 +87,10 @@ hcl.colors(25, palette = "Sunset")  "#704D9E" "#7F4EA2" "#8D4FA5" "#9A51A7" "#A6
 #scatterplot
 
 ```{r}
-qpcr_samp$Month <- factor(qpcr_samp$Month, levels = c("May", "Jun", "Jul", "Aug", "Sep"))
+qpcr_sub$Month <- factor(qpcr_sub$Month, levels = c("May", "Jun", "Jul", "Aug", "Sep"))
 
 #add shading for time when farm was testing >80 ug/100g at DEC (6/6/23-7/7/23; 9/25/23-9/28/23) 
-plot_qpcr_scatter_dec <- ggplot(qpcr_samp, aes(x = Date, y = Quantity_Mean)) +
+plot_qpcr_scatter_dec <- ggplot(qpcr_sub, aes(x = Date, y = Quantity_Mean)) +
   geom_point(aes(y = Quantity_Mean, fill = Month), size = 5, shape = 21) + 
   scale_fill_manual(values = sunset_5) +
   labs(y = "Quantity (log10)") + 
@@ -110,7 +108,7 @@ plot_qpcr_scatter_dec <- ggplot(qpcr_samp, aes(x = Date, y = Quantity_Mean)) +
 plot_qpcr_scatter_dec
 
 #add shading for time when farm was testing >80 ug/100g w/ ELISAs (6/6/23-7/10/23; 7/18/23-7/24/23)
-plot_qpcr_scatter_elisa <- ggplot(qpcr_samp, aes(x = Date, y = Quantity_Mean)) +
+plot_qpcr_scatter_elisa <- ggplot(qpcr_sub, aes(x = Date, y = Quantity_Mean)) +
   geom_point(aes(y = Quantity_Mean, fill = Month), size = 5, shape = 21) + 
   scale_fill_manual(values = sunset_5) +
   labs(y = "Quantity (log10)") + 
@@ -135,7 +133,7 @@ plot_qpcr_scatter_dec /
   plot_qpcr_scatter_elisa
 ```
 
-#raincloud plot
+#Pearson's correlations
 
 #read in microscope data
 
@@ -143,130 +141,98 @@ plot_qpcr_scatter_dec /
 count_micro <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
 ```
 
-#subset to only ID and count data
+#subset to only ID and count data, reformat date, and remove NAs
 
 ```{r}
-count_sub <- select(count_micro, c("Date", "Count_1m_L", "Count_5m_L"))
+count_sub <- select(count_micro, c("Date", "Count_1m_L", "Count_5m_L", "Count_Net")) %>% na.omit()
+count_sub$Date <- as.Date(count_sub$Date, "%m/%d/%Y")
 ```
 
-#gather into long form
+#merge with qpcr data
 
 ```{r}
-count_long <- melt(count_sub, id.vars = "Date", variable.name = "Method")
+count_qpcr <- merge(Quant_dailyMean, count_sub)
 ```
 
-#select only ID_yyyymmdd & Cells_L from eDNA sample-only dataframe
+#read in ELISA data
 
 ```{r}
-qpcr_sub <- select(Quant_dailyMean, c("Date", "Quantity_Mean"))
+elisa <- read.csv("../Data/Oyster_PSTs.csv")
 ```
 
-#add "Method" column filled with "qPCR"
+#reformat 
 
 ```{r}
-qpcr_sub$Method <- "qPCR"
+elisa_sub <- subset(elisa, Method == "ELISA") %>% select(c("Date", "Tox_ug_100g")) 
+elisa_sub$Date <- as.Date(elisa_sub$Date, "%m/%d/%Y")
 ```
 
-#rename Cells_L to "value" to match
+#merge
 
 ```{r}
-qpcr_sub <- qpcr_sub %>% rename("value" = "Quantity_Mean")
+merge_all <- merge(count_qpcr, elisa_sub)
 ```
+
+#calculate Pearson's correlation between qpcr and net tow
 
 ```{r}
-qpcr_sub$value <- as.integer(qpcr_sub$value)
+correlation_q_net <- cor.test(merge_all$Quantity_Mean, merge_all$Count_Net, method = "pearson")
+correlation_q_net
 ```
 
-#append to long-form microscope count df
+#visualize relationship between qpcr and net tow
 
 ```{r}
-count_qpcr <- rbind(count_long, qpcr_sub)
+plot_q_net <- ggplot(merge_all, aes(Quantity_Mean, Count_Net)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_q_net
 ```
 
-#plot
+#calculate Pearson's correlation between qpcr and 1m
 
 ```{r}
-pal <-  hcl.colors(3, palette = "Sunset")
-
-plot_qpcr_raincloud <- ggplot(count_qpcr, aes(x = factor(Method), y = value)) + 
-  ggdist::stat_halfeye(
-    aes(color = Method,
-        fill = after_scale(lighten(color, .5))), adjust = .5, 
-    width = .75, 
-    .width = 0,
-    justification = -.4, 
-    point_color = NA,
-    normalize = "groups") + 
-  geom_boxplot(
-    aes(color = Method,
-        color = after_scale(darken(color, .1, space = "HLS")),
-        fill = after_scale(desaturate(lighten(color, .8), .4))),
-    width = .42, 
-    outlier.shape = NA
-  ) +
-  geom_point(
-    aes(color = Method,
-        color = after_scale(darken(color, .1, space = "HLS"))),
-    fill = "white",
-    shape = 21,
-    stroke = .4,
-    size = 2,
-    position = position_jitter(seed = 1, width = .12)
-  ) + 
-  geom_point(
-    aes(fill = Method),
-    color = "transparent",
-    shape = 21,
-    stroke = .4,
-    size = 2,
-    alpha = .3,
-    position = position_jitter(seed = 1, width = .12)) + 
-  stat_summary(
-    geom = "text",
-    fun = "median",
-    aes(label = round(..y.., 2),
-        color = Method,
-        color = after_scale(darken(color, .1, space = "HLS"))),
-    fontface = "bold",
-    size = 3.5,
-    vjust = -3.75
-  ) +
-#  coord_flip() +
-  scale_color_manual(values = pal, guide = "none") +
-  scale_fill_manual(values = pal, guide = "none") +
-  labs(
-    x = NULL,
-    y = "Alexandrium count (cells/L)"
-  ) +
-  theme_minimal() +
-  theme(
-    panel.grid.minor = element_blank(),
-    panel.grid.major.y = element_blank(),
-    axis.ticks = element_blank(),
-    axis.text.y = element_text(size = 10),
-    axis.title.x = element_text(margin = margin(t = 10),
-                                size = 10)
-  ) +
-  scale_x_discrete(labels=c("qPCR" = "qPCR (2m)", "Count_5m_L" = "Microscope (5m)", "Count_1m_L" = "Microscope (1m)"))
-plot_qpcr_raincloud
+correlation_q_1 <- cor.test(merge_all$Quantity_Mean, merge_all$Count_1m_L, method = "pearson")
+correlation_q_1
 ```
+
+#visualize relationship between qpcr and 1m
+
 ```{r}
-pal <-  hcl.colors(3, palette = "Sunset")
-
-ggplot(count_qpcr, aes(x = Method, y = value, fill = Method, color = Method)) + 
-  scale_fill_manual(values = pal) +
-  scale_color_manual(values = pal) +
-  ggdist::stat_halfeye(adjust = .5, width = .7, .width = 0, justification = -.2, point_colour = NA, normalize = "groups") + 
-  geom_boxplot(width = .2, outlier.shape = NA, alpha = 0.5) + 
-  geom_jitter(width = .05, shape = 21) +
-  theme_pubr()
+plot_q_1 <- ggplot(merge_all, aes(Quantity_Mean, Count_1m_L)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_q_1
 ```
 
-#need to find way to have 2 y-axes
+#calculate Pearson's correlation between qpcr and 5m
+
+```{r}
+correlation_q_5 <- cor.test(merge_all$Quantity_Mean, merge_all$Count_5m_L, method = "pearson")
+correlation_q_5
+```
+
+#visualize relationship between qpcr and 5m
+
+```{r}
+plot_q_5 <- ggplot(merge_all, aes(Quantity_Mean, Count_5m_L)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_q_5
+```
+
+#calculate Pearson's correlation between qpcr and elisa
+
+```{r}
+correlation_q_elisa <- cor.test(merge_all$Quantity_Mean, merge_all$Tox_ug_100g, method = "pearson")
+correlation_q_elisa
+```
+
+#visualize relationship between qpcr and net tow
+
+```{r}
+plot_q_net <- ggplot(merge_all, aes(Quantity_Mean, Count_Net)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_q_net
+```
+
+#Figure w/ qpcr and count data (maybe 2 correlations on the same plot?)
 
 #save as jpeg
 
 ```{r}
 #jpeg("../Figures/Fig5.jpg", width = 8, height = 5, units="in", res=600)
-#plot_qpcr_raincloud
 ```
