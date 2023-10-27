@@ -83,20 +83,6 @@ elisa_psts <- subset(oyster_psts, Method == "ELISA")
 elisa_alex <- merge(elisa_psts, alex, by = "Date")
 ```
 
-#calculate Pearson's correlation between net tow and ELISA
-
-```{r}
-correlation_elisa_net <- cor.test(elisa_alex$Tox_ug_100g, elisa_alex$Count_Net, method = "pearson")
-correlation_elisa_net
-```
-
-#visualize relationship between net tow and ELISA
-
-```{r}
-plot_elisa_net <- ggplot(elisa_alex, aes(Count_Net, Tox_ug_100g)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
-plot_elisa_net
-```
-
 #calculate Pearson's correlation between 1m and ELISA
 
 ```{r}

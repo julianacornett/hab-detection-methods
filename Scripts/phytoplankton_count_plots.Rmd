@@ -41,6 +41,12 @@ alex <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
 alex$Date <- as.Date(alex$Date, "%m/%d/%Y")
 ```
 
+#create new categorical column - presence/absence in net tow 
+
+```{r}
+
+```
+
 #palettes
 
 ```{r}
@@ -63,7 +69,7 @@ annotate("text", x=as.Date("2023-05-04"), y=30, label = "A", size = 5)
 plot_net
 ```
 
-#1m plot (B)
+#1m plot (B) - shape as presence/absence in net tow
 
 ```{r}
 plot_1m <- ggplot(alex, aes(x = Date, y = Count_1m_L)) +
@@ -75,7 +81,7 @@ annotate("text", x=as.Date("2023-05-04"), y=1500, label = "B", size = 5)
 plot_1m
 ```
 
-#5m plot (C)
+#5m plot (C) - shape as presence/absence in net tow 
 
 ```{r}
 plot_5m <- ggplot(alex, aes(x = Date, y = Count_5m_L)) +
@@ -91,7 +97,7 @@ plot_5m
 
 ```{r}
 jpeg("../Figures/Fig2.jpg", width = 8, height = 10, units="in", res=600)
-plot_net / plot_1m / plot_5m 
+plot_1m / plot_5m 
 ```
 
 #Pearson's correlation between collection methods
@@ -108,32 +114,4 @@ correlation_1m_5m
 ```{r}
 plot_1m_5m <- ggplot(alex, aes(Count_1m_L, Count_5m_L)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
 plot_1m_5m
-```
-
-#calculate Pearson's correlation between 1m and net tow
-
-```{r}
-correlation_1m_net <- cor.test(alex$Count_1m_L, alex$Count_Net, method = "pearson")
-correlation_1m_net
-```
-
-#visualize relationship between 1m and net tow
-
-```{r}
-plot_1m_net <- ggplot(alex, aes(Count_1m_L, Count_Net)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
-plot_1m_net
-```
-
-#calculate Pearson's correlation between 5m and net tow
-
-```{r}
-correlation_5m_net <- cor.test(alex$Count_5m_L, alex$Count_Net, method = "pearson")
-correlation_5m_net
-```
-
-#visualize relationship between 5m and net tow
-
-```{r}
-plot_5m_net <- ggplot(alex, aes(Count_5m_L, Count_Net)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
-plot_5m_net
 ```

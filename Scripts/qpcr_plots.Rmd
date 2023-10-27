@@ -144,7 +144,7 @@ count_micro <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
 #subset to only ID and count data, reformat date, and remove NAs
 
 ```{r}
-count_sub <- select(count_micro, c("Date", "Count_1m_L", "Count_5m_L", "Count_Net")) %>% na.omit()
+count_sub <- select(count_micro, c("Date", "Count_1m_L", "Count_5m_L")) %>% na.omit()
 count_sub$Date <- as.Date(count_sub$Date, "%m/%d/%Y")
 ```
 
@@ -171,20 +171,6 @@ elisa_sub$Date <- as.Date(elisa_sub$Date, "%m/%d/%Y")
 
 ```{r}
 merge_all <- merge(count_qpcr, elisa_sub)
-```
-
-#calculate Pearson's correlation between qpcr and net tow
-
-```{r}
-correlation_q_net <- cor.test(merge_all$Quantity_Mean, merge_all$Count_Net, method = "pearson")
-correlation_q_net
-```
-
-#visualize relationship between qpcr and net tow
-
-```{r}
-plot_q_net <- ggplot(merge_all, aes(Quantity_Mean, Count_Net)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
-plot_q_net
 ```
 
 #calculate Pearson's correlation between qpcr and 1m
@@ -222,11 +208,11 @@ correlation_q_elisa <- cor.test(merge_all$Quantity_Mean, merge_all$Tox_ug_100g, 
 correlation_q_elisa
 ```
 
-#visualize relationship between qpcr and net tow
+#visualize relationship between qpcr and elisa
 
 ```{r}
-plot_q_net <- ggplot(merge_all, aes(Quantity_Mean, Count_Net)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
-plot_q_net
+plot_q_elisa <- ggplot(merge_all, aes(Quantity_Mean, Tox_ug_100g)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_q_elisa
 ```
 
 #Figure w/ qpcr and count data (maybe 2 correlations on the same plot?)
@@ -236,3 +222,8 @@ plot_q_net
 ```{r}
 #jpeg("../Figures/Fig5.jpg", width = 8, height = 5, units="in", res=600)
 ```
+
+```{r}
+citation("stats")
+```
+
