@@ -99,11 +99,11 @@ plot_qpcr_scatter_dec <- ggplot(qpcr_sub, aes(x = Date, y = Quantity_Mean)) +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
   scale_y_continuous(trans="log10") + 
   annotate("rect",
-           xmin=as.Date("2023-06-06"), xmax=as.Date("2023-06-19"), ymin = 0, ymax=Inf, fill = "#704D9E", alpha=.25) + 
+           xmin=as.Date("2023-06-06"), xmax=as.Date("2023-06-19"), ymin = 0, ymax=Inf, fill = "#F3E79A", alpha=.35) + 
   annotate("rect",
-           xmin=as.Date("2023-06-24"), xmax=as.Date("2023-07-07"), ymin = 0, ymax=Inf, fill = "#704D9E", alpha=.25) + 
+           xmin=as.Date("2023-06-24"), xmax=as.Date("2023-07-07"), ymin = 0, ymax=Inf, fill = "#F3E79A", alpha=.35) + 
   annotate("rect",
-           xmin=as.Date("2023-09-25"), xmax=as.Date("2023-09-28"), ymin = 0, ymax=Inf, fill = "#704D9E", alpha=.25) +
+           xmin=as.Date("2023-09-25"), xmax=as.Date("2023-09-28"), ymin = 0, ymax=Inf, fill = "#F3E79A", alpha=.35) +
   annotate("text", x=as.Date("2023-05-01"), y=1e+06, label = "A", size = 5)
 plot_qpcr_scatter_dec
 
@@ -117,9 +117,9 @@ plot_qpcr_scatter_elisa <- ggplot(qpcr_sub, aes(x = Date, y = Quantity_Mean)) +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
   scale_y_continuous(trans="log10") + 
   annotate("rect",
-           xmin=as.Date("2023-06-06"), xmax=as.Date("2023-07-10"), ymin = 0, ymax=Inf, fill = "#F6978A", alpha=.25) + 
+           xmin=as.Date("2023-06-06"), xmax=as.Date("2023-07-10"), ymin = 0, ymax=Inf, fill = "#704D9E", alpha=.25) + 
   annotate("rect",
-           xmin=as.Date("2023-07-18"), xmax=as.Date("2023-07-24"), ymin = 0, ymax=Inf, fill = "#F6978A", alpha=.25) + 
+           xmin=as.Date("2023-07-18"), xmax=as.Date("2023-07-24"), ymin = 0, ymax=Inf, fill = "#704D9E", alpha=.25) + 
   annotate("text", x=as.Date("2023-05-01"), y=1e+06, label = "B", size = 5)
 plot_qpcr_scatter_elisa
 
@@ -144,7 +144,7 @@ count_micro <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
 #subset to only ID and count data, reformat date, and remove NAs
 
 ```{r}
-count_sub <- select(count_micro, c("Date", "Count_1m_L", "Count_5m_L")) %>% na.omit()
+count_sub <- select(count_micro, c("Date", "Count_1m_L", "Count_5m_L", "Count_Net")) %>% na.omit()
 count_sub$Date <- as.Date(count_sub$Date, "%m/%d/%Y")
 ```
 
@@ -215,7 +215,7 @@ plot_q_elisa <- ggplot(merge_all, aes(Quantity_Mean, Tox_ug_100g)) + geom_point(
 plot_q_elisa
 ```
 
-#Figure w/ qpcr and count data (maybe 2 correlations on the same plot?)
+#Figure of count data (1m, 5m) on one y-axis and qpcr count data on other y-axis 
 
 #save as jpeg
 
@@ -223,7 +223,42 @@ plot_q_elisa
 #jpeg("../Figures/Fig5.jpg", width = 8, height = 5, units="in", res=600)
 ```
 
+#Figure w/ qpcr and count data regressions vs. ELISA tox data
+
+#save as jpeg
+
 ```{r}
-citation("stats")
+#jpeg("../Figures/Fig6.jpg", width = 8, height = 5, units="in", res=600)
 ```
 
+#t test of net tow vs. quant variables (1m, 5m, elisa, qpcr)
+
+#create new categorical column - presence/absence in net tow as alpha values
+
+```{r}
+merge_all$Presence_NetTow <- ifelse(merge_all$Count_Net==0, "No", "Yes")
+```
+
+#t test of net tow vs. 1m
+
+```{r}
+t.test(Count_1m_L ~ Presence_NetTow, data = merge_all)
+```
+
+#t test of net tow vs. 5m
+
+```{r}
+t.test(Count_5m_L ~ Presence_NetTow, data = merge_all)
+```
+
+#t test of net tow vs. elisa
+
+```{r}
+t.test(Tox_ug_100g ~ Presence_NetTow, data = merge_all)
+```
+
+#t test of net tow vs. qpcr
+
+```{r}
+t.test(Quantity_Mean ~ Presence_NetTow, data = merge_all)
+```
