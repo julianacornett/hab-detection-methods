@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#code to generate the study area map (Figure 1 in manuscript)
+#code to generate sst anomaly map and the study area map (Figures 1 & 2 in manuscript)
 
 #install packages (rnaturalearth & rnaturalearth data for mapping data, ggplot2, ggpubr, & cowplot for creating figure, ggspatial for scale bar and N arrow)
 
@@ -111,6 +111,6 @@ fig1
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig1.jpg", width = 8, height = 5, units="in", res=600)
+jpeg("../Figures/Fig2.jpg", width = 8, height = 5, units="in", res=600)
 fig1
 ```
