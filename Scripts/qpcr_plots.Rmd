@@ -9,9 +9,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#code to generate qPCR plots (Figure(s) __ in manuscript)
+#code to generate qPCR plots (Figures 4-6 in manuscript)
 
-#install packages (ggplot2, ggpubr, ggstream patchwork for creating figures; dplyr, tidyr and reshape2 for data manipulation)
+#install packages (ggplot2, ggpubr, & patchwork for creating figures; dplyr, tidyr and reshape2 for data manipulation)
 
 ```{r}
 #install.packages("ggplot2")
@@ -21,7 +21,6 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages("reshape2")
 #install.packages("patchwork")
 #install.packages("remotes")
-#install.packages("ggstream")
 ```
 
 #load libraries
@@ -33,7 +32,6 @@ library(dplyr)
 library(tidyr)
 library(reshape2)
 library(patchwork)
-library(ggstream)
 source("https://gist.github.com/ellisp/4002241def4e2b360189e58c3f461b4a/raw/0e5dc52262e86b5d21b914db3553e58b0b8d1d20/dualplot.R")     
 ```
 
@@ -85,11 +83,6 @@ Quant_dailyMean$Month <- format(as.Date(Quant_dailyMean$Date, format="%d/%m/%Y")
 sunset_5 <- hcl.colors(5, palette = "Sunset")
 ```
 
-```{r}
-hcl.colors(25, palette = "Sunset")  "#704D9E" "#7F4EA2" "#8D4FA5" "#9A51A7" "#A653A8" "#B156A9" "#BC5AA9" "#C65EA8" "#CF63A6" "#D868A3" "#E06EA0" "#E7759C" "#ED7C97" "#F18592"
-[15] "#F48E8E" "#F6978A" "#F7A086" "#F9A983" "#F9B282" "#F9BB81" "#F9C483" "#F8CD86" "#F6D68A" "#F5DE91" "#F3E79A"
-``` 
-
 #scatterplot
 
 ```{r}
@@ -136,7 +129,7 @@ plot_qpcr_scatter_elisa
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig4.jpg", width = 8, height = 10, units="in", res=600)
+jpeg("../Figures/Fig5.jpg", width = 8, height = 10, units="in", res=600)
 plot_qpcr_scatter_dec /
   plot_qpcr_scatter_elisa
 ```
@@ -252,7 +245,7 @@ count_plot
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig5.jpg", width = 8, height = 5, units="in", res=600)
+jpeg("../Figures/Fig4.jpg", width = 8, height = 5, units="in", res=600)
 count_plot
 ```
 
