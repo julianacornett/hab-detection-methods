@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#code to generate plot of PST levels over the course of the summer (Figure 3 in manuscript?)
+#code to generate plot of PST levels over the course of the summer (Figure 4 in manuscript?)
 
 #install packages (ggplot2 & ggpubr for creating figure)
 
@@ -43,10 +43,6 @@ alex$Date <- as.Date(alex$Date, "%m/%d/%Y")
 sunset_5 <- hcl.colors(5, palette = "Sunset")
 ```
 
-```{r}
-"#704D9E" "#BC5AA9" "#ED7C97" "#F9B282" "#F3E79A"
-```
-
 #timeseries plot 
 
 ```{r}
@@ -65,7 +61,7 @@ pst_plot
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig3.jpg", width = 8, height = 5, units="in", res=600)
+jpeg("../Figures/Fig4.jpg", width = 8, height = 5, units="in", res=600)
 pst_plot
 ```
 

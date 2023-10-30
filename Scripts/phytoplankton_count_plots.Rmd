@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#code to generate phytoplankton count plots (Figure 2A, 2B, & 2C in manuscript)
+#code to generate phytoplankton count plots (Figure 3A & 3B in manuscript)
 
 #install packages (ggplot2 & ggpubr for creating figures, patchwork to combine figures; reshape2 for gathering into long format)
 
@@ -53,10 +53,6 @@ alex$Presence_NetTow <- ifelse(alex$Count_Net==0, "No", "Yes")
 sunset_5 <- hcl.colors(5, palette = "Sunset")
 ```
 
-```{r}
-"#704D9E" "#BC5AA9" "#ED7C97" "#F9B282" "#F3E79A"
-```
-
 #1m plot (A) - shaded as presence/absence in net tow
 
 ```{r}
@@ -92,7 +88,7 @@ plot_5m
 #save as jpeg (combined plot)
 
 ```{r}
-jpeg("../Figures/Fig2.jpg", width = 8, height = 10, units="in", res=600)
+jpeg("../Figures/Fig3.jpg", width = 8, height = 10, units="in", res=600)
 plot_1m / plot_5m 
 ```
 
