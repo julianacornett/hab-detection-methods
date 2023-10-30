@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#code to generate qPCR plots (Figures 4-6 in manuscript)
+#code to generate qPCR plots (Figures 5-7 in manuscript)
 
 #install packages (ggplot2, ggpubr, & patchwork for creating figures; dplyr, tidyr and reshape2 for data manipulation)
 
@@ -129,7 +129,7 @@ plot_qpcr_scatter_elisa
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig5.jpg", width = 8, height = 10, units="in", res=600)
+jpeg("../Figures/Fig6.jpg", width = 8, height = 10, units="in", res=600)
 plot_qpcr_scatter_dec /
   plot_qpcr_scatter_elisa
 ```
@@ -245,7 +245,7 @@ count_plot
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig4.jpg", width = 8, height = 5, units="in", res=600)
+jpeg("../Figures/Fig5.jpg", width = 8, height = 5, units="in", res=600)
 count_plot
 ```
 
@@ -280,7 +280,7 @@ plot_qpcr
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig6.jpg", width = 8, height = 10, units="in", res=600)
+jpeg("../Figures/Fig7.jpg", width = 8, height = 10, units="in", res=600)
 plot_1m_5m /
   plot_qpcr
 ```
