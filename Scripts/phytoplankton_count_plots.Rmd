@@ -114,6 +114,20 @@ quad_1m_5m <- lm(alex_na$Count_1m_L ~ poly(alex_na$Count_5m_L,2))
 summary(quad_1m_5m)
 ```
 
+#try logarithmic
+
+```{r}
+log_1m_5m <- lm(alex_na$Count_1m_L ~ log(alex_na$Count_5m_L))
+summary(log_1m_5m)
+```
+
+#try exponential
+
+```{r}
+exp_1m_5m <- lm(log(alex_na$Count_1m_L) ~ alex_na$Count_5m_L)
+summary(exp_1m_5m)
+```
+
 #visualize relationship between 1m and 5m counts
 
 ```{r}

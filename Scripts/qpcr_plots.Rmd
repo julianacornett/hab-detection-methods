@@ -177,28 +177,74 @@ merge_all <- merge(count_qpcr, elisa_sub)
 #calculate linear regression between qpcr and 1m
 
 ```{r}
-correlation_q_1 <- cor.test(merge_all$Quantity_Mean, merge_all$Count_1m_L, method = "pearson")
-correlation_q_1
+lm_q_1 <- lm(merge_all$Quantity_Mean ~ merge_all$Count_1m_L)
+summary(lm_q_1)
+```
+#try nonlinear b/c linear not significant
+
+#exponential 
+
+```{r}
+exp_q_1 <- lm(log(merge_all$Quantity_Mean) ~ merge_all$Count_1m_L)
+summary(exp_q_1)
+```
+
+#logarithmic
+
+```{r}
+log_q_1 <- lm(merge_all$Quantity_Mean ~ log(merge_all$Count_1m_L))
+summary(log_q_1)
+```
+
+#quadratic
+
+```{r}
+quad_q_1 <- lm(merge_all$Quantity_Mean ~ poly(merge_all$Count_1m_L,2))
+summary(quad_q_1)
 ```
 
 #visualize relationship between qpcr and 1m
 
 ```{r}
-plot_q_1 <- ggplot(merge_all, aes(Quantity_Mean, Count_1m_L)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_q_1 <- ggplot(merge_all, aes(Count_1m_L, Quantity_Mean)) + geom_point() + stat_smooth() + theme_pubr()
 plot_q_1
 ```
 
 #calculate linear regression between qpcr and 5m
 
 ```{r}
-correlation_q_5 <- cor.test(merge_all$Quantity_Mean, merge_all$Count_5m_L, method = "pearson")
-correlation_q_5
+lm_q_5 <- lm(merge_all$Quantity_Mean ~ merge_all$Count_5m_L)
+summary(lm_q_5)
 ```
+
+#try nonlinear b/c non-signficant
+
+#exponential 
+
+```{r}
+exp_q_5 <- lm(log(merge_all$Quantity_Mean) ~ merge_all$Count_5m_L)
+summary(exp_q_5)
+```
+
+#logarithmic
+
+```{r}
+log_q_5 <- lm(merge_all$Quantity_Mean ~ log(merge_all$Count_5m_L))
+summary(log_q_5)
+```
+
+#quadratic
+
+```{r}
+quad_q_5 <- lm(merge_all$Quantity_Mean ~ poly(merge_all$Count_5m_L,2))
+summary(quad_q_5)
+```
+
 
 #visualize relationship between qpcr and 5m
 
 ```{r}
-plot_q_5 <- ggplot(merge_all, aes(Quantity_Mean, Count_5m_L)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_q_5 <- ggplot(merge_all, aes(Count_5m_L, Quantity_Mean)) + geom_point() + stat_smooth() + theme_pubr()
 plot_q_5
 ```
 
@@ -210,6 +256,20 @@ summary(lm_q_elisa)
 ```
 
 #try nonlinear b/c linear non-significant
+
+#exponential
+
+```{r}
+exp_q_elisa <- lm(log(merge_all$Tox_ug_100g) ~ merge_all$Quantity_Mean)
+summary(exp_q_elisa)
+```
+
+#logarithmic
+
+```{r}
+log_q_elisa <- lm(merge_all$Tox_ug_100g ~ log(merge_all$Quantity_Mean))
+summary(log_q_elisa)
+```
 
 #quadratic
 
