@@ -92,18 +92,31 @@ jpeg("../Figures/Fig3.jpg", width = 8, height = 10, units="in", res=600)
 plot_1m / plot_5m 
 ```
 
-#Pearson's correlation between collection methods
+#regression between collection methods
 
-#calculate Pearson's correlation between 1m and 5m counts
+#remove NAs
 
 ```{r}
-correlation_1m_5m <- cor.test(alex$Count_1m_L, alex$Count_5m_L, method = "pearson")
-correlation_1m_5m
+alex_na <- na.omit(alex)
+```
+
+#calculate linear regression between 1m and 5m counts
+
+```{r}
+lm_1m_5m <- lm(alex_na$Count_1m_L ~ alex_na$Count_5m_L)
+summary(lm_1m_5m)
+```
+
+#try quadratic since non-significant
+
+```{r}
+quad_1m_5m <- lm(alex_na$Count_1m_L ~ poly(alex_na$Count_5m_L,2))
+summary(quad_1m_5m)
 ```
 
 #visualize relationship between 1m and 5m counts
 
 ```{r}
-plot_1m_5m <- ggplot(alex, aes(Count_1m_L, Count_5m_L)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_1m_5m <- ggplot(alex_na, aes(Count_1m_L, Count_5m_L)) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2)) + theme_pubr()
 plot_1m_5m
 ```

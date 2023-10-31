@@ -134,7 +134,7 @@ plot_qpcr_scatter_dec /
   plot_qpcr_scatter_elisa
 ```
 
-#Pearson's correlations
+#regressions
 
 #read in microscope data
 
@@ -174,7 +174,7 @@ elisa_sub$Date <- as.Date(elisa_sub$Date, "%m/%d/%Y")
 merge_all <- merge(count_qpcr, elisa_sub)
 ```
 
-#calculate Pearson's correlation between qpcr and 1m
+#calculate linear regression between qpcr and 1m
 
 ```{r}
 correlation_q_1 <- cor.test(merge_all$Quantity_Mean, merge_all$Count_1m_L, method = "pearson")
@@ -188,7 +188,7 @@ plot_q_1 <- ggplot(merge_all, aes(Quantity_Mean, Count_1m_L)) + geom_point() + g
 plot_q_1
 ```
 
-#calculate Pearson's correlation between qpcr and 5m
+#calculate linear regression between qpcr and 5m
 
 ```{r}
 correlation_q_5 <- cor.test(merge_all$Quantity_Mean, merge_all$Count_5m_L, method = "pearson")
@@ -202,17 +202,26 @@ plot_q_5 <- ggplot(merge_all, aes(Quantity_Mean, Count_5m_L)) + geom_point() + g
 plot_q_5
 ```
 
-#calculate Pearson's correlation between qpcr and elisa
+#calculate linear regression between qpcr and elisa
 
 ```{r}
-correlation_q_elisa <- cor.test(merge_all$Quantity_Mean, merge_all$Tox_ug_100g, method = "pearson")
-correlation_q_elisa
+lm_q_elisa <- lm(merge_all$Tox_ug_100g ~ merge_all$Quantity_Mean)
+summary(lm_q_elisa)
+```
+
+#try nonlinear b/c linear non-significant
+
+#quadratic
+
+```{r}
+quad_q_elisa <- lm(merge_all$Tox_ug_100g ~ poly(merge_all$Quantity_Mean,2))
+summary(quad_q_elisa)
 ```
 
 #visualize relationship between qpcr and elisa
 
 ```{r}
-plot_q_elisa <- ggplot(merge_all, aes(Quantity_Mean, Tox_ug_100g)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_q_elisa <- ggplot(merge_all, aes(Quantity_Mean, Tox_ug_100g)) + geom_point() + stat_smooth(method = "lm", formula = y ~ poly(x, 2)) + theme_pubr()
 plot_q_elisa
 ```
 
@@ -269,7 +278,7 @@ plot_1m_5m
 ```{r}
 plot_qpcr <- ggplot(merge_all, aes(x=Quantity_Mean, y = Tox_ug_100g)) + 
   geom_point(size = 5, shape = 21, color = "black", fill = "#BC5AA9") + 
-  geom_smooth(method = "lm", se = FALSE, size = 3, color = "#BC5AA9") +
+  stat_smooth(method = "lm", se = FALSE, size = 3, color = "#BC5AA9", formula = y ~ poly(x, 2)) +
   theme_pubr() +
   labs(x = "Alexandrium quantity (log10 copy number/L)", y = "PSTs (ug/100g)") + 
   annotate("text", x=350, y=250, label = "B", size = 5) +

@@ -143,6 +143,9 @@ sst_june_2023$anomaly <- as.numeric(sst_june_2023$CRW_SSTANOMALY)
 ```
 
 #create dataframe with mean June sst anomaly by lat and lon
+```{r}
+mean_june_anomaly_2018 <- aggregate(anomaly ~ latitude + longitude, data = sst_june_2018, FUN = mean, ra.rm = TRUE)
+```
 
 ```{r}
 mean_june_anomaly_2019 <- aggregate(anomaly ~ latitude + longitude, data = sst_june_2019, FUN = mean, na.rm = TRUE)
