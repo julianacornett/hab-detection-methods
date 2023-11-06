@@ -92,7 +92,7 @@ qpcr_sub$Month <- factor(qpcr_sub$Month, levels = c("May", "Jun", "Jul", "Aug", 
 plot_qpcr_scatter_dec <- ggplot(qpcr_sub, aes(x = Date, y = Quantity_Mean)) +
   geom_point(aes(y = Quantity_Mean, fill = Month), size = 5, shape = 21) + 
   scale_fill_manual(values = sunset_5) +
-  labs(y = "Alexandrium quantity (log10 copy number/L)") + 
+  labs(y = "A. catenella quantity (log10 copy number/L)") + 
   theme_pubr() +
   theme(legend.position = "right") +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
@@ -111,7 +111,7 @@ plot_qpcr_scatter_dec
 plot_qpcr_scatter_elisa <- ggplot(qpcr_sub, aes(x = Date, y = Quantity_Mean)) +
   geom_point(aes(y = Quantity_Mean, fill = Month), size = 5, shape = 21) + 
   scale_fill_manual(values = sunset_5) +
-  labs(y = "Alexandrium quantity (log10 copy number/L)") + 
+  labs(y = "A. catenella quantity (log10 copy number/L)") + 
   theme_pubr() +
   theme(legend.position = "right") +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
@@ -297,7 +297,7 @@ count_plot <- ggplot(merge_all, aes(x=Date)) +
   geom_line( aes(y=Quantity_Mean / coeff), color = "#BC5AA9", size = 3, alpha = 0.75) + 
   scale_y_continuous(
     name = "Alexandrium count (cells/L)",
-    sec.axis = sec_axis(~.*coeff, name="Alexandrium quantity (copy number/L)")
+    sec.axis = sec_axis(~.*coeff, name="A. catenella quantity (copy number/L)")
   ) +
   theme_pubr() +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") + 
