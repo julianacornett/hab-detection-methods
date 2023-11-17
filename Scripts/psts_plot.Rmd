@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#code to generate plot of PST levels over the course of the summer (Figure 3 in manuscript?)
+#code to generate plot of PST levels over the course of the summer (Figure 4 in manuscript?)
 
 #install packages (ggplot2 & ggpubr for creating figure)
 
@@ -43,10 +43,6 @@ alex$Date <- as.Date(alex$Date, "%m/%d/%Y")
 sunset_5 <- hcl.colors(5, palette = "Sunset")
 ```
 
-```{r}
-"#704D9E" "#BC5AA9" "#ED7C97" "#F9B282" "#F3E79A"
-```
-
 #timeseries plot 
 
 ```{r}
@@ -65,7 +61,7 @@ pst_plot
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig3.jpg", width = 8, height = 5, units="in", res=600)
+jpeg("../Figures/Fig4.jpg", width = 8, height = 5, units="in", res=600)
 pst_plot
 ```
 
@@ -83,25 +79,48 @@ elisa_psts <- subset(oyster_psts, Method == "ELISA")
 elisa_alex <- merge(elisa_psts, alex, by = "Date")
 ```
 
-#calculate Pearson's correlation between 1m and ELISA
+#calculate linear regression between 1m and ELISA
 
 ```{r}
-correlation_elisa_1m <- cor.test(elisa_alex$Tox_ug_100g, elisa_alex$Count_1m_L, method = "pearson")
-correlation_elisa_1m
+lm_elisa_1m <- lm(elisa_alex$Tox_ug_100g ~ elisa_alex$Count_1m_L)
+summary(lm_elisa_1m)
+```
+
+#try logarithmic 
+
+```{r}
+log_elisa_1m <- lm(elisa_alex$Tox_ug_100g ~ log(elisa_alex$Count_1m_L))
+summary(log_elisa_1m)
+```
+
+#try exponential
+
+```{r}
+exp_elisa_1m <- lm(log(elisa_alex$Tox_ug_100g) ~ elisa_alex$Count_1m_L)
+summary(exp_elisa_1m)
+```
+
+#try quadratic
+
+```{r}
+quad_elisa_1m <- lm(elisa_alex$Tox_ug_100g ~ poly(elisa_alex$Count_1m_L,2))
+summary(quad_elisa_1m)
 ```
 
 #visualize relationship between 1m and ELISA
 
 ```{r}
-plot_elisa_1m <- ggplot(elisa_alex, aes(Count_1m_L, Tox_ug_100g)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_elisa_1m <- ggplot(elisa_alex, aes(Count_1m_L, Tox_ug_100g)) + geom_point() +
+  stat_smooth() + 
+  theme_pubr()
 plot_elisa_1m
 ```
 
-#calculate Pearson's correlation between 5m and ELISA
+#calculate linear regression between 5m and ELISA
 
 ```{r}
-correlation_elisa_5m <- cor.test(elisa_alex$Tox_ug_100g, elisa_alex$Count_5m_L, method = "pearson")
-correlation_elisa_5m
+lm_elisa_5m <- lm(elisa_alex$Tox_ug_100g ~ elisa_alex$Count_5m_L)
+summary(lm_elisa_5m)
 ```
 
 #visualize relationship between 5m and ELISA

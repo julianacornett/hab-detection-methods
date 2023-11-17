@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#code to generate phytoplankton count plots (Figure 2A, 2B, & 2C in manuscript)
+#code to generate phytoplankton count plots (Figure 3A & 3B in manuscript)
 
 #install packages (ggplot2 & ggpubr for creating figures, patchwork to combine figures; reshape2 for gathering into long format)
 
@@ -53,10 +53,6 @@ alex$Presence_NetTow <- ifelse(alex$Count_Net==0, "No", "Yes")
 sunset_5 <- hcl.colors(5, palette = "Sunset")
 ```
 
-```{r}
-"#704D9E" "#BC5AA9" "#ED7C97" "#F9B282" "#F3E79A"
-```
-
 #1m plot (A) - shaded as presence/absence in net tow
 
 ```{r}
@@ -92,22 +88,49 @@ plot_5m
 #save as jpeg (combined plot)
 
 ```{r}
-jpeg("../Figures/Fig2.jpg", width = 8, height = 10, units="in", res=600)
+jpeg("../Figures/Fig3.jpg", width = 8, height = 10, units="in", res=600)
 plot_1m / plot_5m 
 ```
 
-#Pearson's correlation between collection methods
+#regression between collection methods
 
-#calculate Pearson's correlation between 1m and 5m counts
+#remove NAs
 
 ```{r}
-correlation_1m_5m <- cor.test(alex$Count_1m_L, alex$Count_5m_L, method = "pearson")
-correlation_1m_5m
+alex_na <- na.omit(alex)
+```
+
+#calculate linear regression between 1m and 5m counts
+
+```{r}
+lm_1m_5m <- lm(alex_na$Count_1m_L ~ alex_na$Count_5m_L)
+summary(lm_1m_5m)
+```
+
+#try quadratic since non-significant
+
+```{r}
+quad_1m_5m <- lm(alex_na$Count_1m_L ~ poly(alex_na$Count_5m_L,2))
+summary(quad_1m_5m)
+```
+
+#try logarithmic
+
+```{r}
+log_1m_5m <- lm(alex_na$Count_1m_L ~ log(alex_na$Count_5m_L))
+summary(log_1m_5m)
+```
+
+#try exponential
+
+```{r}
+exp_1m_5m <- lm(log(alex_na$Count_1m_L) ~ alex_na$Count_5m_L)
+summary(exp_1m_5m)
 ```
 
 #visualize relationship between 1m and 5m counts
 
 ```{r}
-plot_1m_5m <- ggplot(alex, aes(Count_1m_L, Count_5m_L)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_1m_5m <- ggplot(alex_na, aes(Count_1m_L, Count_5m_L)) + geom_point() + geom_smooth(method = "lm", formula = y ~ poly(x,2)) + theme_pubr()
 plot_1m_5m
 ```

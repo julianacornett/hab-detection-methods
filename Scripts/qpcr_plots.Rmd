@@ -9,9 +9,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#code to generate qPCR plots (Figure(s) __ in manuscript)
+#code to generate qPCR plots (Figures 5-7 in manuscript)
 
-#install packages (ggplot2, ggpubr, ggstream patchwork for creating figures; dplyr, tidyr and reshape2 for data manipulation)
+#install packages (ggplot2, ggpubr, & patchwork for creating figures; dplyr, tidyr and reshape2 for data manipulation)
 
 ```{r}
 #install.packages("ggplot2")
@@ -21,7 +21,6 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages("reshape2")
 #install.packages("patchwork")
 #install.packages("remotes")
-#install.packages("ggstream")
 ```
 
 #load libraries
@@ -33,7 +32,6 @@ library(dplyr)
 library(tidyr)
 library(reshape2)
 library(patchwork)
-library(ggstream)
 source("https://gist.github.com/ellisp/4002241def4e2b360189e58c3f461b4a/raw/0e5dc52262e86b5d21b914db3553e58b0b8d1d20/dualplot.R")     
 ```
 
@@ -85,11 +83,6 @@ Quant_dailyMean$Month <- format(as.Date(Quant_dailyMean$Date, format="%d/%m/%Y")
 sunset_5 <- hcl.colors(5, palette = "Sunset")
 ```
 
-```{r}
-hcl.colors(25, palette = "Sunset")  "#704D9E" "#7F4EA2" "#8D4FA5" "#9A51A7" "#A653A8" "#B156A9" "#BC5AA9" "#C65EA8" "#CF63A6" "#D868A3" "#E06EA0" "#E7759C" "#ED7C97" "#F18592"
-[15] "#F48E8E" "#F6978A" "#F7A086" "#F9A983" "#F9B282" "#F9BB81" "#F9C483" "#F8CD86" "#F6D68A" "#F5DE91" "#F3E79A"
-``` 
-
 #scatterplot
 
 ```{r}
@@ -99,7 +92,7 @@ qpcr_sub$Month <- factor(qpcr_sub$Month, levels = c("May", "Jun", "Jul", "Aug", 
 plot_qpcr_scatter_dec <- ggplot(qpcr_sub, aes(x = Date, y = Quantity_Mean)) +
   geom_point(aes(y = Quantity_Mean, fill = Month), size = 5, shape = 21) + 
   scale_fill_manual(values = sunset_5) +
-  labs(y = "Alexandrium quantity (log10 copy number/L)") + 
+  labs(y = "A. catenella quantity (log10 copy number/L)") + 
   theme_pubr() +
   theme(legend.position = "right") +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
@@ -118,7 +111,7 @@ plot_qpcr_scatter_dec
 plot_qpcr_scatter_elisa <- ggplot(qpcr_sub, aes(x = Date, y = Quantity_Mean)) +
   geom_point(aes(y = Quantity_Mean, fill = Month), size = 5, shape = 21) + 
   scale_fill_manual(values = sunset_5) +
-  labs(y = "Alexandrium quantity (log10 copy number/L)") + 
+  labs(y = "A. catenella quantity (log10 copy number/L)") + 
   theme_pubr() +
   theme(legend.position = "right") +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
@@ -136,12 +129,12 @@ plot_qpcr_scatter_elisa
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig4.jpg", width = 8, height = 10, units="in", res=600)
+jpeg("../Figures/Fig6.jpg", width = 8, height = 10, units="in", res=600)
 plot_qpcr_scatter_dec /
   plot_qpcr_scatter_elisa
 ```
 
-#Pearson's correlations
+#regressions
 
 #read in microscope data
 
@@ -181,45 +174,114 @@ elisa_sub$Date <- as.Date(elisa_sub$Date, "%m/%d/%Y")
 merge_all <- merge(count_qpcr, elisa_sub)
 ```
 
-#calculate Pearson's correlation between qpcr and 1m
+#calculate linear regression between qpcr and 1m
 
 ```{r}
-correlation_q_1 <- cor.test(merge_all$Quantity_Mean, merge_all$Count_1m_L, method = "pearson")
-correlation_q_1
+lm_q_1 <- lm(merge_all$Quantity_Mean ~ merge_all$Count_1m_L)
+summary(lm_q_1)
+```
+#try nonlinear b/c linear not significant
+
+#exponential 
+
+```{r}
+exp_q_1 <- lm(log(merge_all$Quantity_Mean) ~ merge_all$Count_1m_L)
+summary(exp_q_1)
+```
+
+#logarithmic
+
+```{r}
+log_q_1 <- lm(merge_all$Quantity_Mean ~ log(merge_all$Count_1m_L))
+summary(log_q_1)
+```
+
+#quadratic
+
+```{r}
+quad_q_1 <- lm(merge_all$Quantity_Mean ~ poly(merge_all$Count_1m_L,2))
+summary(quad_q_1)
 ```
 
 #visualize relationship between qpcr and 1m
 
 ```{r}
-plot_q_1 <- ggplot(merge_all, aes(Quantity_Mean, Count_1m_L)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_q_1 <- ggplot(merge_all, aes(Count_1m_L, Quantity_Mean)) + geom_point() + stat_smooth() + theme_pubr()
 plot_q_1
 ```
 
-#calculate Pearson's correlation between qpcr and 5m
+#calculate linear regression between qpcr and 5m
 
 ```{r}
-correlation_q_5 <- cor.test(merge_all$Quantity_Mean, merge_all$Count_5m_L, method = "pearson")
-correlation_q_5
+lm_q_5 <- lm(merge_all$Quantity_Mean ~ merge_all$Count_5m_L)
+summary(lm_q_5)
 ```
+
+#try nonlinear b/c non-signficant
+
+#exponential 
+
+```{r}
+exp_q_5 <- lm(log(merge_all$Quantity_Mean) ~ merge_all$Count_5m_L)
+summary(exp_q_5)
+```
+
+#logarithmic
+
+```{r}
+log_q_5 <- lm(merge_all$Quantity_Mean ~ log(merge_all$Count_5m_L))
+summary(log_q_5)
+```
+
+#quadratic
+
+```{r}
+quad_q_5 <- lm(merge_all$Quantity_Mean ~ poly(merge_all$Count_5m_L,2))
+summary(quad_q_5)
+```
+
 
 #visualize relationship between qpcr and 5m
 
 ```{r}
-plot_q_5 <- ggplot(merge_all, aes(Quantity_Mean, Count_5m_L)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_q_5 <- ggplot(merge_all, aes(Count_5m_L, Quantity_Mean)) + geom_point() + stat_smooth() + theme_pubr()
 plot_q_5
 ```
 
-#calculate Pearson's correlation between qpcr and elisa
+#calculate linear regression between qpcr and elisa
 
 ```{r}
-correlation_q_elisa <- cor.test(merge_all$Quantity_Mean, merge_all$Tox_ug_100g, method = "pearson")
-correlation_q_elisa
+lm_q_elisa <- lm(merge_all$Tox_ug_100g ~ merge_all$Quantity_Mean)
+summary(lm_q_elisa)
+```
+
+#try nonlinear b/c linear non-significant
+
+#exponential
+
+```{r}
+exp_q_elisa <- lm(log(merge_all$Tox_ug_100g) ~ merge_all$Quantity_Mean)
+summary(exp_q_elisa)
+```
+
+#logarithmic
+
+```{r}
+log_q_elisa <- lm(merge_all$Tox_ug_100g ~ log(merge_all$Quantity_Mean))
+summary(log_q_elisa)
+```
+
+#quadratic
+
+```{r}
+quad_q_elisa <- lm(merge_all$Tox_ug_100g ~ poly(merge_all$Quantity_Mean,2))
+summary(quad_q_elisa)
 ```
 
 #visualize relationship between qpcr and elisa
 
 ```{r}
-plot_q_elisa <- ggplot(merge_all, aes(Quantity_Mean, Tox_ug_100g)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
+plot_q_elisa <- ggplot(merge_all, aes(Quantity_Mean, Tox_ug_100g)) + geom_point() + stat_smooth(method = "lm", formula = y ~ poly(x, 2)) + theme_pubr()
 plot_q_elisa
 ```
 
@@ -235,7 +297,7 @@ count_plot <- ggplot(merge_all, aes(x=Date)) +
   geom_line( aes(y=Quantity_Mean / coeff), color = "#BC5AA9", size = 3, alpha = 0.75) + 
   scale_y_continuous(
     name = "Alexandrium count (cells/L)",
-    sec.axis = sec_axis(~.*coeff, name="Alexandrium quantity (copy number/L)")
+    sec.axis = sec_axis(~.*coeff, name="A. catenella quantity (copy number/L)")
   ) +
   theme_pubr() +
   scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") + 
@@ -276,9 +338,9 @@ plot_1m_5m
 ```{r}
 plot_qpcr <- ggplot(merge_all, aes(x=Quantity_Mean, y = Tox_ug_100g)) + 
   geom_point(size = 5, shape = 21, color = "black", fill = "#BC5AA9") + 
-  geom_smooth(method = "lm", se = FALSE, size = 3, color = "#BC5AA9") +
+  stat_smooth(method = "lm", se = FALSE, size = 3, color = "#BC5AA9", formula = y ~ poly(x, 2)) +
   theme_pubr() +
-  labs(x = "Alexandrium quantity (log10 copy number/L)", y = "PSTs (ug/100g)") + 
+  labs(x = "A. catenella quantity (log10 copy number/L)", y = "PSTs (ug/100g)") + 
   annotate("text", x=350, y=250, label = "B", size = 5) +
   scale_x_continuous(trans="log10") 
 plot_qpcr
@@ -287,7 +349,7 @@ plot_qpcr
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig6.jpg", width = 8, height = 10, units="in", res=600)
+jpeg("../Figures/Fig7.jpg", width = 8, height = 10, units="in", res=600)
 plot_1m_5m /
   plot_qpcr
 ```
