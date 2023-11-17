@@ -485,7 +485,7 @@ qpcr_mic_corr
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/qPCR_Microscope_Correlation.jpg", width = 10, height = 8, units="in", res=600)
+jpeg("../Figures/qPCR_Microscope_Correlation.jpg", width = 8, height = 5, units="in", res=600)
 qpcr_mic_corr
 ```
 
