@@ -386,3 +386,26 @@ TukeyHSD(aov_elisa)
 aov_qpcr <- aov(Quantity_Mean ~ as.factor(threshold), data = merge_aov)
 summary(aov_qpcr)
 ```
+
+#plot of qPCR vs. 1m and 5m - x-axis is copy number/L; y-axis is cells/L (for poster)
+
+#read in csv
+
+```{r}
+count_depths <- read.csv("../Data/Count_qPCR_Depths.csv")
+```
+
+
+```{r}
+ggplot(count_depths, aes(x = Quantity_Mean, y = Count_L, color = Depth, fill = Depth, shape = Depth)) + 
+  scale_fill_manual(values = c("darkorange", "darkturquoise"), labels = c("1m", "5m")) +
+  scale_color_manual(values = c("darkorange", "darkturquoise"), labels = c("1m", "5m")) +
+  scale_shape_manual(values = c(21,24)) +
+  geom_point(size = 4, color = "black", alpha = 0.75) + 
+  geom_smooth(method = "lm", se = FALSE, size = 2) +
+  scale_x_continuous(trans="log10") +
+  theme_pubr() +
+  xlab("Mean A. catenella qPCR Quantity (Copy Number/L; Log-transformed)") +
+  ylab("Alexandrium Microscope Count (Cells/L)") +
+  theme(legend.position = "right")
+```
