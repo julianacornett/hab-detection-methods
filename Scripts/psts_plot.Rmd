@@ -65,6 +65,33 @@ jpeg("../Figures/Fig4.jpg", width = 8, height = 5, units="in", res=600)
 pst_plot
 ```
 
+#correlation between ELISA and mouse bioassay
+
+#read in csv
+
+```{r}
+pst_grouped <- read.csv("../Data/PSTs_byWeek.csv")
+```
+
+```{r}
+elisa_dec_corr <- ggplot(pst_grouped, aes(x = PST_ELISA, y = PST_DEC)) + 
+  geom_point(size = 4) + 
+  stat_poly_line(se = FALSE, size = 2, color = "black") +
+  stat_poly_eq(use_label(c("R2", "p"))) +
+  theme_pubr() +
+  ylab("PSTs from mouse bioassay (ug/100g)") +
+  xlab("PSTs from ELISA (ug/100g)") 
+elisa_dec_corr
+```
+
+#save as jpeg
+
+```{r}
+jpeg("../Figures/ELISA_DEC_Correlation.jpg", width = 8, height = 5, units="in", res=600)
+elisa_dec_corr
+```
+
+
 #correlation between ELISA and phytoplankton counts
 
 #subset psts df into ELISA only
