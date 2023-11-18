@@ -70,11 +70,11 @@ pst_plot
 #read in csv
 
 ```{r}
-pst_grouped <- read.csv("../Data/PSTs_byWeek.csv")
+pst_pairs <- read.csv("../Data/PST_Pairs.csv")
 ```
 
 ```{r}
-elisa_dec_corr <- ggplot(pst_grouped, aes(x = PST_ELISA, y = PST_DEC)) + 
+elisa_dec_corr <- ggplot(pst_pairs, aes(x = PST_ELISA_ug100g, y = PST_DEC_ug100g)) + 
   geom_point(size = 4) + 
   stat_poly_line(se = FALSE, size = 2, color = "black") +
   stat_poly_eq(use_label(c("R2", "p"))) +
