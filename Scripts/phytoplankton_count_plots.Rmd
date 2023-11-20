@@ -11,13 +11,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #code to generate phytoplankton count plots (Figure 3A & 3B in manuscript)
 
-#install packages (ggplot2 & ggpubr for creating figures, patchwork to combine figures; reshape2 for gathering into long format)
+#install packages (ggplot2 & ggpubr for creating figures, patchwork to combine figures; reshape2 for gathering into long format; dplyr for dataframe)
 
 ```{r}
 #install.packages("ggplot2")
 #install.packages("ggpubr")
 #install.packages("patchwork")
 #install.packages("reshape2")
+#install.packages("dplyr")
 ```
 
 #load libraries
@@ -27,6 +28,7 @@ library(ggplot2)
 library(ggpubr)
 library(patchwork)
 library(reshape2)
+library(dplyr)
 ```
 
 #read in Alexandrium count data (includes net tow, 1m, & 5m)
@@ -45,12 +47,6 @@ alex$Date <- as.Date(alex$Date, "%m/%d/%Y")
 
 ```{r}
 alex$Presence_NetTow <- ifelse(alex$Count_Net==0, "No", "Yes")
-```
-
-#palettes
-
-```{r}
-sunset_5 <- hcl.colors(5, palette = "Sunset")
 ```
 
 #1m plot (A) - shaded as presence/absence in net tow
@@ -85,11 +81,37 @@ annotate("rect", xmin=as.Date("2023-08-13"), xmax=as.Date("2023-08-17"), ymin = 
 plot_5m
 ```
 
-#save as jpeg (combined plot)
+#move count data into long form
 
 ```{r}
-jpeg("../Figures/Fig3.jpg", width = 8, height = 10, units="in", res=600)
-plot_1m / plot_5m 
+alex_sub <- select(alex, c("Date", "Count_1m_L", "Count_5m_L"))
+```
+
+```{r}
+alex_long <- melt(alex_sub, id.vars = "Date", variable.name = "Depth") %>% na.omit()
+```
+
+#alternate (combined) Figure 2
+
+```{r}
+phyto_combo <- ggplot(alex_long, aes(x = Date, y = value, shape = Depth)) +
+  geom_point(size = 5, color = "black") +
+  scale_shape_manual(values = c(21, 24), labels = c("1m", "5m")) +
+  theme_pubr() +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
+  labs(x = NULL, y = "Alexandrium Count (cells/L)") +
+annotate("rect", xmin=as.Date("2023-05-13"), xmax=as.Date("2023-05-17"), ymin = 0, ymax=Inf, fill = "darkgray", alpha = 0.25) +
+annotate("rect", xmin=as.Date("2023-06-04"), xmax=as.Date("2023-06-15"), ymin = 0, ymax=Inf, fill = "darkgray", alpha = 0.25) +
+annotate("rect", xmin=as.Date("2023-06-24"), xmax=as.Date("2023-07-07"), ymin = 0, ymax=Inf, fill = "darkgray", alpha = 0.25) +
+annotate("rect", xmin=as.Date("2023-08-13"), xmax=as.Date("2023-08-17"), ymin = 0, ymax=Inf, fill = "darkgray", alpha = 0.25) +
+  theme(legend.position = "right")
+phyto_combo
+```
+
+#save as jpeg
+```{r}
+jpeg("../Figures/Fig2.jpg", width = 8, height = 5, units="in", res=600)
+phyto_combo
 ```
 
 #regression between collection methods
