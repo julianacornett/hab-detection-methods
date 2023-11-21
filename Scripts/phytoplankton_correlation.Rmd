@@ -1,0 +1,47 @@
+---
+title: "phytoplankton_count_plots"
+author: "Juliana Cornett"
+date: "2023-08-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#code for correlation between phytoplankton count methods (info for Table 1 in manuscript)
+
+#read in Alexandrium count data (includes net tow, 1m, & 5m)
+
+```{r}
+alex <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
+```
+
+#regression between collection methods
+
+#remove NAs
+
+```{r}
+alex_na <- na.omit(alex)
+```
+
+#calculate linear regression between 1m and 5m counts
+
+```{r}
+lm_1m_5m <- lm(alex_na$Count_1m_L ~ alex_na$Count_5m_L)
+summary(lm_1m_5m)
+```
+
+#calculate linear regression between 1m and net tow counts
+
+```{r}
+lm_1m_net <- lm(alex_na$Count_1m_L ~ alex_na$Count_Net)
+summary(lm_1m_net)
+```
+
+#calculate linear regression between 5m and net tow counts
+
+```{r}
+lm_5m_net <- lm(alex_na$Count_5m_L ~ alex_na$Count_Net)
+summary(lm_5m_net)
+```
