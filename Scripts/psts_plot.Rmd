@@ -114,9 +114,9 @@ qpcr_pst <- merge(oyster_psts, qpcr_dailyMean)
 
 ```{r}
   qpcr_tox <- ggplot(merged_long, aes(x = qPCR_qmeandaily, y = Tox_ug_100g, color = Method, fill = Method, shape = Method)) + 
-  scale_fill_manual(values = c("darkgray", "black"), labels = c("MBA", "ELISA")) +
-  scale_color_manual(values = c("darkgray", "black"), labels = c("MBA", "ELISA")) +
-  scale_shape_manual(values = c(21,24), labels = c("MBA", "ELISA")) +
+  scale_fill_manual(values = c("darkgray", "black"), labels = c("ELISA", "MBA")) +
+  scale_color_manual(values = c("darkgray", "black"), labels = c("ELISA", "MBA")) +
+  scale_shape_manual(values = c(21,24), labels = c("ELISA", "MBA")) +
   geom_point(size = 4, color = "black", alpha = 0.75) + 
   stat_poly_line(se = FALSE, size = 2) +
   stat_poly_eq(use_label(c("R2", "p"))) +
@@ -137,73 +137,80 @@ jpeg("../Figures/qPCR_Tox_Correlation.jpg", width = 8, height = 5, units="in", r
 qpcr_tox
 ```
 
-#correlation between microscope counts and psts
+#calculate linear regression between ELISA and MBA
 
 ```{r}
-Quant_dailyMean
+lm_elisa_mba <- lm(pst_pairs$PST_ELISA_ug100g ~ pst_pairs$PST_DEC_ug100g)
+summary(lm_elisa_mba)
 ```
 
-#correlation between ELISA and phytoplankton counts
-
-#subset psts df into ELISA only
+#add log-transformed qpcr column
 
 ```{r}
-elisa_psts <- subset(oyster_psts, Method == "ELISA")
+merged_long$log_qpcr <- log(merged_long$qPCR_qmeandaily)
 ```
 
-#join ELISAs df with alex count df where dates in alex count df are in ELISA df
+#calculate linear regression between qPCR and MBA
 
 ```{r}
-elisa_alex <- merge(elisa_psts, alex_count, by = "Date")
+lm_mba_qpcr <- subset(merged_long, Method == "MBA") 
+lm_mba_qpcr <- lm(lm_mba_qpcr$log_qpcr ~ lm_mba_qpcr$Tox_ug_100g)
+summary(lm_mba_qpcr)
 ```
 
-#calculate linear regression between 1m and ELISA
+#calculate linear regression between qPCR and ELISA
 
 ```{r}
-lm_elisa_1m <- lm(elisa_alex$Tox_ug_100g ~ elisa_alex$Count_1m_L)
-summary(lm_elisa_1m)
+lm_elisa_qpcr <- subset(merged_long, Method == "ELISA") 
+lm_elisa_qpcr <- lm(lm_elisa_qpcr$log_qpcr ~ lm_elisa_qpcr$Tox_ug_100g)
+summary(lm_elisa_qpcr)
 ```
 
-#try logarithmic 
+#plot of 1m correlation with mba/elisa
 
 ```{r}
-log_elisa_1m <- lm(elisa_alex$Tox_ug_100g ~ log(elisa_alex$Count_1m_L))
-summary(log_elisa_1m)
+corr_1m_tox <- ggplot(merged_long, aes(x = Count_1m_L, y = Tox_ug_100g, color = Method, fill = Method, shape = Method)) + 
+  scale_fill_manual(values = c("darkgray", "black"), labels = c("ELISA", "MBA")) +
+  scale_color_manual(values = c("darkgray", "black"), labels = c("ELISA", "MBA")) +
+  scale_shape_manual(values = c(21,24), labels = c("ELISA", "MBA")) +
+  geom_point(size = 4, color = "black", alpha = 0.75) + 
+  stat_poly_line(se = FALSE, size = 2) +
+  stat_poly_eq(use_label(c("R2", "p"))) +
+  theme_pubr() +
+  xlab("Alexandrium Count (cells/L)") +
+  ylab("PSTs (ug/100g)") +
+  theme(legend.position = "right") +
+  geom_hline(yintercept = 80, linetype = "dashed") +
+  geom_hline(yintercept = 34, linetype = "dotted") +
+  annotate("text", x=1400, y=250, label = "A", size = 5) 
+corr_1m_tox
 ```
 
-#try exponential
+#plot of 5m correlation with mba/elisa
 
 ```{r}
-exp_elisa_1m <- lm(log(elisa_alex$Tox_ug_100g) ~ elisa_alex$Count_1m_L)
-summary(exp_elisa_1m)
+corr_5m_tox <- ggplot(merged_long, aes(x = Count_5m_L, y = Tox_ug_100g, color = Method, fill = Method, shape = Method)) + 
+  scale_fill_manual(values = c("darkgray", "black"), labels = c("ELISA", "MBA")) +
+  scale_color_manual(values = c("darkgray", "black"), labels = c("ELISA", "MBA")) +
+  scale_shape_manual(values = c(21,24), labels = c("ELISA", "MBA")) +
+  geom_point(size = 4, color = "black", alpha = 0.75) + 
+  stat_poly_line(se = FALSE, size = 2) +
+  stat_poly_eq(use_label(c("R2", "p"))) +
+  theme_pubr() +
+  xlab("Alexandrium Count (cells/L)") +
+  ylab("PSTs (ug/100g)") +
+  theme(legend.position = "right") +
+  geom_hline(yintercept = 80, linetype = "dashed") +
+  geom_hline(yintercept = 34, linetype = "dotted") +
+  annotate("text", x=1450, y=250, label = "B", size = 5) 
+corr_5m_tox
 ```
 
-#try quadratic
+#combined plot
 
 ```{r}
-quad_elisa_1m <- lm(elisa_alex$Tox_ug_100g ~ poly(elisa_alex$Count_1m_L,2))
-summary(quad_elisa_1m)
+jpeg("../Figures/Mic_Tox_Corr.jpg", width = 8, height = 10, units="in", res=600)
+corr_1m_tox /
+  corr_5m_tox
 ```
 
-#visualize relationship between 1m and ELISA
-
-```{r}
-plot_elisa_1m <- ggplot(elisa_alex, aes(Count_1m_L, Tox_ug_100g)) + geom_point() +
-  stat_smooth() + 
-  theme_pubr()
-plot_elisa_1m
-```
-
-#calculate linear regression between 5m and ELISA
-
-```{r}
-lm_elisa_5m <- lm(elisa_alex$Tox_ug_100g ~ elisa_alex$Count_5m_L)
-summary(lm_elisa_5m)
-```
-
-#visualize relationship between 5m and ELISA
-
-```{r}
-plot_elisa_5m <- ggplot(elisa_alex, aes(Count_5m_L, Tox_ug_100g)) + geom_point() + geom_smooth(method = "lm") + theme_pubr()
-plot_elisa_5m
-```

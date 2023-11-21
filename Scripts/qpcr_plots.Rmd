@@ -182,6 +182,7 @@ merge_all$log_qpcrMean <- log(merge_all$Quantity_Mean)
 lm_q_1 <- lm(merge_all$Quantity_Mean ~ merge_all$Count_1m_L)
 summary(lm_q_1)
 ```
+
 #try nonlinear b/c linear not significant
 
 #exponential 
@@ -459,7 +460,6 @@ summary(aov_qpcr)
 count_depths <- read.csv("../Data/Count_qPCR_Depths.csv")
 ```
 
-
 ```{r}
 qpcr_mic_corr <- ggplot(count_depths, aes(x = Quantity_Mean, y = Count_L, color = Depth, fill = Depth, shape = Depth)) + 
   scale_fill_manual(values = c("darkgray", "black"), labels = c("1m", "5m")) +
@@ -476,10 +476,31 @@ qpcr_mic_corr <- ggplot(count_depths, aes(x = Quantity_Mean, y = Count_L, color 
 qpcr_mic_corr
 ```
 
+#add log-transformed qpcr column
+
+```{r}
+count_depths$log_qpcr <- log(count_depths$Quantity_Mean)
+```
+
+#calculate linear regression between 1m and qpcr
+
+```{r}
+lm_1m_qpcr <- subset(count_depths, Depth == "1m") 
+lm_1m_qpcr <- lm(lm_1m_qpcr$log_qpcr ~ lm_1m_qpcr$Count_L)
+summary(lm_1m_qpcr)
+```
+
+#calculate linear regression between 5m and qpcr
+
+```{r}
+lm_5m_qpcr <- subset(count_depths, Depth == "5m") 
+lm_5m_qpcr <- lm(lm_5m_qpcr$log_qpcr ~ lm_5m_qpcr$Count_L)
+summary(lm_5m_qpcr)
+```
+
 #save as jpeg
 
 ```{r}
 jpeg("../Figures/qPCR_Microscope_Correlation.jpg", width = 8, height = 5, units="in", res=600)
 qpcr_mic_corr
 ```
-
