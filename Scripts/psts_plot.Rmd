@@ -45,6 +45,10 @@ qpcr_quant <- subset(qpcr_quant, qpcr_quant$Sample_Type == "Sample")
 qpcr_quant <- subset(qpcr_quant, qpcr_quant$Quantity_Mean >= 63.98)
 ```
 
+```{r}
+qpcr_dailyMean
+```
+
 #create new df with daily mean quantity
 
 ```{r}
@@ -128,12 +132,15 @@ qpcr_tox
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/qPCR_Tox_Correlation.jpg")
+jpeg("../Figures/qPCR_Tox_Correlation.jpg", width = 8, height = 5, units="in", res=600)
 qpcr_tox
 ```
 
 #correlation between microscope counts and psts
 
+```{r}
+Quant_dailyMean
+```
 
 #correlation between ELISA and phytoplankton counts
 
