@@ -116,6 +116,13 @@ qpcr_mic_corr <- ggplot(count_depths, aes(x = Quantity_Mean, y = Count_L, color 
 qpcr_mic_corr
 ```
 
+#save as jpeg
+
+```{r}
+jpeg("../Figures/Fig2.jpg", width = 8, height = 5, units="in", res=600)
+qpcr_mic_corr
+```
+
 #add log-transformed qpcr column
 
 ```{r}
@@ -138,9 +145,3 @@ lm_5m_qpcr <- lm(lm_5m_qpcr$log_qpcr ~ lm_5m_qpcr$Count_L)
 summary(lm_5m_qpcr)
 ```
 
-#save as jpeg
-
-```{r}
-jpeg("../Figures/qPCR_Microscope_Correlation.jpg", width = 8, height = 5, units="in", res=600)
-qpcr_mic_corr
-```
