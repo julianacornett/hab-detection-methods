@@ -9,9 +9,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#code to generate qPCR plots (Figures 5-7 in manuscript)
+#code to generate qPCR plots (Figures 2 in manuscript) and info for Table 1
 
-#install packages (ggplot2, ggpubr, & patchwork for creating figures; dplyr, tidyr and reshape2 for data manipulation)
+#install packages (ggplot2, ggpubr, patchwork, & ggpmisc for creating figures; dplyr, tidyr and reshape2 for data manipulation)
 
 ```{r}
 #install.packages("ggplot2")
@@ -20,7 +20,6 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages("tidyr")
 #install.packages("reshape2")
 #install.packages("patchwork")
-#install.packages("remotes")
 #install.packages("ggpmisc")
 ```
 
@@ -33,7 +32,6 @@ library(dplyr)
 library(tidyr)
 library(reshape2)
 library(patchwork)
-source("https://gist.github.com/ellisp/4002241def4e2b360189e58c3f461b4a/raw/0e5dc52262e86b5d21b914db3553e58b0b8d1d20/dualplot.R")     
 library(ggpmisc)
 ```
 
@@ -41,18 +39,6 @@ library(ggpmisc)
 
 ```{r}
 qpcr <- read.csv("../Data/Alexandrium_qPCR_Results.csv")
-```
-
-#reformat
-
-```{r}
-qpcr$Date <- as.Date(qpcr$Date, "%m/%d/%Y")
-```
-
-#extract month 
-
-```{r}
-qpcr$Month <- format(as.Date(qpcr$Date, format="%d/%m/%Y"),"%b")
 ```
 
 #subset to samples only (not blanks)
@@ -71,63 +57,7 @@ qpcr_sub <- subset(qpcr_samp, qpcr_samp$Quantity_Mean >= 63.98)
 
 ```{r}
 Quant_dailyMean <- aggregate(Quantity_Mean ~ Date, data = qpcr_sub, FUN = mean)
-```
-
-#extract month 
-
-```{r}
-Quant_dailyMean$Month <- format(as.Date(Quant_dailyMean$Date, format="%d/%m/%Y"),"%b")
-```
-
-#scatterplot
-
-```{r}
-qpcr_sub$Month <- factor(qpcr_sub$Month, levels = c("May", "Jun", "Jul", "Aug", "Sep"))
-
-#add shading for time when farm was testing >80 ug/100g at DEC (6/6/23-7/7/23; 9/25/23-9/28/23) 
-plot_qpcr_scatter_dec <- ggplot(qpcr_sub, aes(x = Date, y = Quantity_Mean)) +
-  geom_point(aes(y = Quantity_Mean, fill = Month), size = 5, shape = 21) + 
-  scale_fill_manual(values = sunset_5) +
-  labs(y = "A. catenella quantity (log10 copy number/L)") + 
-  theme_pubr() +
-  theme(legend.position = "right") +
-  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
-  scale_y_continuous(trans="log10") + 
-  annotate("rect",
-           xmin=as.Date("2023-06-06"), xmax=as.Date("2023-06-19"), ymin = 0, ymax=Inf, fill = "#F3E79A", alpha=.35) + 
-  annotate("rect",
-           xmin=as.Date("2023-06-24"), xmax=as.Date("2023-07-07"), ymin = 0, ymax=Inf, fill = "#F3E79A", alpha=.35) + 
-  annotate("rect",
-           xmin=as.Date("2023-09-25"), xmax=as.Date("2023-09-28"), ymin = 0, ymax=Inf, fill = "#F3E79A", alpha=.35) +
-  annotate("text", x=as.Date("2023-05-01"), y=1e+06, label = "A", size = 5) +
-  theme(axis.title.x = element_blank()) 
-plot_qpcr_scatter_dec
-
-#add shading for time when farm was testing >80 ug/100g w/ ELISAs (6/6/23-7/10/23; 7/18/23-7/24/23)
-plot_qpcr_scatter_elisa <- ggplot(qpcr_sub, aes(x = Date, y = Quantity_Mean)) +
-  geom_point(aes(y = Quantity_Mean, fill = Month), size = 5, shape = 21) + 
-  scale_fill_manual(values = sunset_5) +
-  labs(y = "A. catenella quantity (log10 copy number/L)") + 
-  theme_pubr() +
-  theme(legend.position = "right") +
-  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
-  scale_y_continuous(trans="log10") + 
-  annotate("rect",
-           xmin=as.Date("2023-06-06"), xmax=as.Date("2023-07-10"), ymin = 0, ymax=Inf, fill = "#704D9E", alpha=.25) + 
-  annotate("rect",
-           xmin=as.Date("2023-07-18"), xmax=as.Date("2023-07-24"), ymin = 0, ymax=Inf, fill = "#704D9E", alpha=.25) + 
-  annotate("text", x=as.Date("2023-05-01"), y=1e+06, label = "B", size = 5) +
-  theme(axis.title.x = element_blank()) 
-plot_qpcr_scatter_elisa
-
-```
-
-#save as jpeg
-
-```{r}
-jpeg("../Figures/Fig6.jpg", width = 8, height = 10, units="in", res=600)
-plot_qpcr_scatter_dec /
-  plot_qpcr_scatter_elisa
+Quant_dailyMean$Date <- as.Date(Quant_dailyMean$Date, "%m/%d/%Y")
 ```
 
 #regressions
@@ -149,6 +79,16 @@ count_sub$Date <- as.Date(count_sub$Date, "%m/%d/%Y")
 
 ```{r}
 count_qpcr <- merge(Quant_dailyMean, count_sub)
+```
+
+```{r}
+count_qpcr
+```
+
+#linear regression between qpcr and net tow
+
+```{r}
+
 ```
 
 #read in ELISA data
@@ -288,38 +228,6 @@ plot_q_elisa <- ggplot(merge_all, aes(Quantity_Mean, Tox_ug_100g)) + geom_point(
 plot_q_elisa
 ```
 
-#Figure of count data (1m, 5m) on one y-axis and qpcr count data on other y-axis 
-
-```{r}
-coeff <- 100
-
-count_plot <- ggplot(merge_all, aes(x=Date)) +
-  
-  geom_line( aes(y=Count_1m_L), color = "#F9B282", size = 3, alpha = 0.75) + 
-  geom_line( aes(y=Count_5m_L), color = "#ED7C97", size = 3, alpha = 0.75) +
-  geom_line( aes(y=Quantity_Mean / coeff), color = "#BC5AA9", size = 3, alpha = 0.75) + 
-  scale_y_continuous(
-    name = "Alexandrium count (cells/L)",
-    sec.axis = sec_axis(~.*coeff, name="A. catenella quantity (copy number/L)")
-  ) +
-  theme_pubr() +
-  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") + 
-  theme(
-    axis.title.y = element_text(color = "#F48E8E"),
-    axis.title.y.right = element_text(color = "#BC5AA9"),
-     axis.title.x = element_blank()) +
-  annotate("text", x=as.Date("2023-06-18"), y=2600, label = "2m qPCR", size = 4, color = "#BC5AA9") +
-  annotate("text", x=as.Date("2023-07-22"), y=1300, label = "1m microscope", size = 4, color = "#F9B282") +
-  annotate("text", x=as.Date("2023-08-05"), y=1000, label = "5m microscope", size = 4, color = "#ED7C97")
-count_plot
-```
-
-#save as jpeg
-
-```{r}
-jpeg("../Figures/Fig5.jpg", width = 8, height = 5, units="in", res=600)
-count_plot
-```
 
 #Figure w/ qpcr and count data regressions vs. ELISA tox data
 
@@ -357,100 +265,6 @@ plot_1m_5m /
   plot_qpcr
 ```
 
-#t test of net tow vs. quant variables (1m, 5m, elisa, qpcr)
-
-#create new categorical column - presence/absence in net tow as alpha values
-
-```{r}
-merge_all$Presence_NetTow <- ifelse(merge_all$Count_Net==0, "No", "Yes")
-```
-
-#t test of net tow vs. 1m
-
-```{r}
-t.test(Count_1m_L ~ Presence_NetTow, data = merge_all)
-```
-
-#t test of net tow vs. 5m
-
-```{r}
-t.test(Count_5m_L ~ Presence_NetTow, data = merge_all)
-```
-
-#t test of net tow vs. elisa
-
-```{r}
-t.test(Tox_ug_100g ~ Presence_NetTow, data = merge_all)
-```
-
-#t test of net tow vs. qpcr
-
-```{r}
-t.test(Quantity_Mean ~ Presence_NetTow, data = merge_all)
-```
-
-#ANOVAs
-
-#read in tox data again and subset to only DEC and reformat date
-
-```{r}
-tox_dec <- read.csv("../Data/Oyster_PSTs.csv") %>% subset(Method == "DEC")
-tox_dec$Date <- as.Date(tox_dec$Date, (format="%d/%m/%Y"))
-```
-
-#create new categorical column in tox data with 3 values: 1) <34 ug/100g, 2) >34 and <80 ug/100g, 3) >80 ug/100g
-
-```{r}
-tox_dec$threshold <- ifelse(tox_dec$Tox_ug_100g == 34, "<34 ug/100g", ifelse(tox_dec$Tox_ug_100g >= 80, ">80 ug/100g", ">34 and <80 ug/100g"))
-```
-
-#subset to week and threshold only
-
-```{r}
-tox_sub <- select(tox_dec, c("Week", "threshold"))
-```
-
-#merge w/ merge_all df
-
-```{r}
-merge_aov <- merge(merge_all, tox_sub)
-```
-
-#ANOVA of dec tox vs. 1m
-
-```{r}
-aov_1m <- aov(Count_1m_L ~ as.factor(threshold), data = merge_aov)
-summary(aov_1m)
-```
-
-```{r}
-TukeyHSD(aov_1m)
-```
-
-#ANOVA of dec tox vs. 5m
-
-```{r}
-aov_5m <- aov(Count_5m_L ~ as.factor(threshold), data = merge_aov)
-summary(aov_5m)
-```
-
-#ANOVA of dec tox vs. elisa
-
-```{r}
-aov_elisa <- aov(Tox_ug_100g ~ as.factor(threshold), data = merge_aov)
-summary(aov_elisa)
-```
-
-```{r}
-TukeyHSD(aov_elisa)
-```
-
-#ANOVA of dec tox vs. qpcr
-
-```{r}
-aov_qpcr <- aov(Quantity_Mean ~ as.factor(threshold), data = merge_aov)
-summary(aov_qpcr)
-```
 
 #plot of qPCR vs. 1m and 5m - x-axis is copy number/L; y-axis is cells/L (for poster)
 
