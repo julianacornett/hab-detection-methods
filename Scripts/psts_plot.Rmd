@@ -182,7 +182,7 @@ corr_1m_tox <- ggplot(merged_long, aes(x = Count_1m_L, y = Tox_ug_100g, color = 
   theme(legend.position = "right") +
   geom_hline(yintercept = 80, linetype = "dashed") +
   geom_hline(yintercept = 34, linetype = "dotted") +
-  annotate("text", x=1400, y=250, label = "A", size = 5) 
+  annotate("text", x=1450, y=250, label = "A", size = 5) 
 corr_1m_tox
 ```
 
@@ -214,3 +214,34 @@ corr_1m_tox /
   corr_5m_tox
 ```
 
+#calculate linear regression between 1m and ELISA
+
+```{r}
+lm_elisa_1m <- subset(merged_long, Method == "ELISA") 
+lm_elisa_1m <- lm(lm_elisa_1m$Count_1m_L ~ lm_elisa_1m$Tox_ug_100g)
+summary(lm_elisa_1m)
+```
+
+#calculate linear regression between 5m and ELISA
+
+```{r}
+lm_elisa_5m <- subset(merged_long, Method == "ELISA") 
+lm_elisa_5m <- lm(lm_elisa_5m$Count_5m_L ~ lm_elisa_5m$Tox_ug_100g)
+summary(lm_elisa_5m)
+```
+
+#calculate linear regression between 1m and MBA
+
+```{r}
+lm_mba_1m <- subset(merged_long, Method == "MBA") 
+lm_mba_1m <- lm(lm_mba_1m$Count_1m_L ~ lm_mba_1m$Tox_ug_100g)
+summary(lm_mba_1m)
+```
+
+#calculate linear regression between 5m and MBA
+
+```{r}
+lm_mba_5m <- subset(merged_long, Method == "MBA") 
+lm_mba_5m <- lm(lm_mba_5m$Count_5m_L ~ lm_mba_5m$Tox_ug_100g)
+summary(lm_mba_5m)
+```
