@@ -128,9 +128,12 @@ qpcr_tox
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/qPCR_Tox_Correlation")
+jpeg("../Figures/qPCR_Tox_Correlation.jpg")
 qpcr_tox
 ```
+
+#correlation between microscope counts and psts
+
 
 #correlation between ELISA and phytoplankton counts
 
