@@ -79,12 +79,6 @@ Quant_dailyMean <- aggregate(Quantity_Mean ~ Date, data = qpcr_sub, FUN = mean)
 Quant_dailyMean$Month <- format(as.Date(Quant_dailyMean$Date, format="%d/%m/%Y"),"%b")
 ```
 
-#palettes
-
-```{r}
-sunset_5 <- hcl.colors(5, palette = "Sunset")
-```
-
 #scatterplot
 
 ```{r}
@@ -468,8 +462,8 @@ count_depths <- read.csv("../Data/Count_qPCR_Depths.csv")
 
 ```{r}
 qpcr_mic_corr <- ggplot(count_depths, aes(x = Quantity_Mean, y = Count_L, color = Depth, fill = Depth, shape = Depth)) + 
-  scale_fill_manual(values = c("darkorange", "darkturquoise"), labels = c("1m", "5m")) +
-  scale_color_manual(values = c("darkorange", "darkturquoise"), labels = c("1m", "5m")) +
+  scale_fill_manual(values = c("darkgray", "black"), labels = c("1m", "5m")) +
+  scale_color_manual(values = c("darkgray", "black"), labels = c("1m", "5m")) +
   scale_shape_manual(values = c(21,24)) +
   geom_point(size = 4, color = "black", alpha = 0.75) + 
   stat_poly_line(se = FALSE, size = 2) +

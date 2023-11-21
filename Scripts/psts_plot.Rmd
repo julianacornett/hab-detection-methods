@@ -32,13 +32,23 @@ library(ggpmisc)
 ```{r}
 oyster_psts <- read.csv("../Data/Oyster_PSTs.csv")
 alex_count <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
+qpcr_quant <- read.csv("../Data/Alexandrium_qPCR_Results.csv")
 ```
 
-#format dates
+#format 
 
 ```{r}
 oyster_psts$Date <- as.Date(oyster_psts$Date, "%m/%d/%Y")
 alex_count$Date <- as.Date(alex$Date, "%m/%d/%Y")
+qpcr_quant$Date <- as.Date(qpcr_quant$Date, "%m/%d/%Y")
+qpcr_quant <- subset(qpcr_quant, qpcr_quant$Sample_Type == "Sample")
+qpcr_quant <- subset(qpcr_quant, qpcr_quant$Quantity_Mean >= 63.98)
+```
+
+#create new df with daily mean quantity
+
+```{r}
+qpcr_dailyMean <- aggregate(Quantity_Mean ~ Date, data = qpcr_quant, FUN = mean)
 ```
 
 #timeseries plot 
@@ -87,6 +97,39 @@ elisa_dec_corr
 ```{r}
 jpeg("../Figures/ELISA_DEC_Correlation.jpg", width = 8, height = 5, units="in", res=600)
 elisa_dec_corr
+```
+
+#merge pst and qpcr data
+
+```{r}
+qpcr_pst <- merge(oyster_psts, qpcr_dailyMean)
+```
+
+#correlation between qPCR versus ELISA and MBA PSTs
+
+```{r}
+  qpcr_tox <- ggplot(qpcr_pst, aes(x = Quantity_Mean, y = Tox_ug_100g, color = Method, fill = Method, shape = Method)) + 
+  scale_fill_manual(values = c("darkgray", "black"), labels = c("MBA", "ELISA")) +
+  scale_color_manual(values = c("darkgray", "black"), labels = c("MBA", "ELISA")) +
+  scale_shape_manual(values = c(21,24), labels = c("MBA", "ELISA")) +
+  geom_point(size = 4, color = "black", alpha = 0.75) + 
+  stat_poly_line(se = FALSE, size = 2) +
+  stat_poly_eq(use_label(c("R2", "p"))) +
+  scale_x_continuous(trans="log10") +
+  theme_pubr() +
+  xlab("Mean A. catenella qPCR Quantity (Copy Number/L; Log-transformed)") +
+  ylab("PSTs (ug/100g)") +
+  theme(legend.position = "right") +
+  geom_hline(yintercept = 80, linetype = "dashed") +
+  geom_hline(yintercept = 34, linetype = "dotted")
+qpcr_tox
+```
+
+#save as jpeg
+
+```{r}
+jpeg("../Figures/qPCR_Tox_Correlation")
+qpcr_tox
 ```
 
 #correlation between ELISA and phytoplankton counts
