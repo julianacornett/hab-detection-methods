@@ -1,4 +1,4 @@
-﻿Pair,Tox_ug_100g,Method,Count_1m_L,Count_5m_L,qPCR_dailyMean
+﻿Pair,Tox_ug_100g,Method,Count_1m_L,Count_5m_L,qPCR_qmeandaily
 1,42.38299,ELISA,0,0,8129.268
 1,34,MBA,0,0,8129.268
 2,39.00109,ELISA,0,0,1690.453
@@ -41,10 +41,3 @@
 20,153,MBA,500,1000,30217.026
 21,42.36173857,ELISA,500,0,860.614
 21,38,MBA,500,0,860.614
-,,,,,
-,,,,,
-,,,,,
-,,,,,
-,,,,,
-,,,,,
-,,,,,

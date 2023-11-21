@@ -46,7 +46,8 @@ qpcr_quant <- subset(qpcr_quant, qpcr_quant$Quantity_Mean >= 63.98)
 ```
 
 ```{r}
-qpcr_dailyMean
+merged_long <- read.csv("../Data/PST_Pairs_Long.csv")
+merged_long
 ```
 
 #create new df with daily mean quantity
@@ -112,7 +113,7 @@ qpcr_pst <- merge(oyster_psts, qpcr_dailyMean)
 #correlation between qPCR versus ELISA and MBA PSTs
 
 ```{r}
-  qpcr_tox <- ggplot(qpcr_pst, aes(x = Quantity_Mean, y = Tox_ug_100g, color = Method, fill = Method, shape = Method)) + 
+  qpcr_tox <- ggplot(merged_long, aes(x = qPCR_qmeandaily, y = Tox_ug_100g, color = Method, fill = Method, shape = Method)) + 
   scale_fill_manual(values = c("darkgray", "black"), labels = c("MBA", "ELISA")) +
   scale_color_manual(values = c("darkgray", "black"), labels = c("MBA", "ELISA")) +
   scale_shape_manual(values = c(21,24), labels = c("MBA", "ELISA")) +
