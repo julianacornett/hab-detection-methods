@@ -47,35 +47,12 @@ qpcr_quant <- subset(qpcr_quant, qpcr_quant$Quantity_Mean >= 63.98)
 
 ```{r}
 merged_long <- read.csv("../Data/PST_Pairs_Long.csv")
-merged_long
 ```
 
 #create new df with daily mean quantity
 
 ```{r}
 qpcr_dailyMean <- aggregate(Quantity_Mean ~ Date, data = qpcr_quant, FUN = mean)
-```
-
-#timeseries plot 
-
-```{r}
-pst_plot <- ggplot(oyster_psts, aes(x = Date, y = Tox_ug_100g, fill = Method)) +
-  geom_point(size = 5, shape = 21) +
-  scale_fill_manual(values = c("#F3E79A", "#704D9E")) +
-  theme_pubr() +
-  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
-  labs(x = NULL, y = "PSTs in Oyster Tissue (ug/100g)") +
-    theme(legend.position = "right") +
-  geom_hline(yintercept = 80, linetype = "dashed") +
-  geom_hline(yintercept = 34, linetype = "dotted")
-pst_plot
-```
-
-#save as jpeg
-
-```{r}
-jpeg("../Figures/Fig4.jpg", width = 8, height = 5, units="in", res=600)
-pst_plot
 ```
 
 #correlation between ELISA and mouse bioassay
@@ -100,7 +77,7 @@ elisa_dec_corr
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/ELISA_DEC_Correlation.jpg", width = 8, height = 5, units="in", res=600)
+jpeg("../Figures/Fig3.jpg", width = 8, height = 5, units="in", res=600)
 elisa_dec_corr
 ```
 
@@ -133,7 +110,7 @@ qpcr_tox
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/qPCR_Tox_Correlation.jpg", width = 8, height = 5, units="in", res=600)
+jpeg("../Figures/Fig4.jpg", width = 8, height = 5, units="in", res=600)
 qpcr_tox
 ```
 
@@ -206,12 +183,33 @@ corr_5m_tox <- ggplot(merged_long, aes(x = Count_5m_L, y = Tox_ug_100g, color = 
 corr_5m_tox
 ```
 
+#plot of net tow correlation with mba/elisa
+
+```{r}
+corr_net_tox <- ggplot(merged_long, aes(x = Count_Net, y = Tox_ug_100g, color = Method, fill = Method, shape = Method)) + 
+  scale_fill_manual(values = c("darkgray", "black"), labels = c("ELISA", "MBA")) +
+  scale_color_manual(values = c("darkgray", "black"), labels = c("ELISA", "MBA")) +
+  scale_shape_manual(values = c(21,24), labels = c("ELISA", "MBA")) +
+  geom_point(size = 4, color = "black", alpha = 0.75) + 
+  stat_poly_line(se = FALSE, size = 2) +
+  stat_poly_eq(use_label(c("R2", "p"))) +
+  theme_pubr() +
+  xlab("Alexandrium Count (cells)") +
+  ylab("PSTs (ug/100g)") +
+  theme(legend.position = "right") +
+  geom_hline(yintercept = 80, linetype = "dashed") +
+  geom_hline(yintercept = 34, linetype = "dotted") +
+  annotate("text", x=8.5, y=250, label = "C", size = 5) 
+corr_net_tox
+```
+
 #combined plot
 
 ```{r}
-jpeg("../Figures/Mic_Tox_Corr.jpg", width = 8, height = 10, units="in", res=600)
+jpeg("../Figures/Fig5.jpg", width = 8, height = 12, units="in", res=600)
 corr_1m_tox /
-  corr_5m_tox
+  corr_5m_tox /
+  corr_net_tox
 ```
 
 #calculate linear regression between 1m and ELISA
@@ -220,6 +218,14 @@ corr_1m_tox /
 lm_elisa_1m <- subset(merged_long, Method == "ELISA") 
 lm_elisa_1m <- lm(lm_elisa_1m$Count_1m_L ~ lm_elisa_1m$Tox_ug_100g)
 summary(lm_elisa_1m)
+```
+
+#calculate linear regression between net tow and ELISA
+
+```{r}
+lm_elisa_net <- subset(merged_long, Method == "ELISA") 
+lm_elisa_net <- lm(lm_elisa_net$Count_Net ~ lm_elisa_net$Tox_ug_100g)
+summary(lm_elisa_net)
 ```
 
 #calculate linear regression between 5m and ELISA
@@ -238,6 +244,14 @@ lm_mba_1m <- lm(lm_mba_1m$Count_1m_L ~ lm_mba_1m$Tox_ug_100g)
 summary(lm_mba_1m)
 ```
 
+#calculate linear regression between net tow and MBA
+
+```{r}
+lm_mba_net <- subset(merged_long, Method == "MBA") 
+lm_mba_net <- lm(lm_mba_net$Count_Net ~ lm_mba_net$Tox_ug_100g)
+summary(lm_mba_net)
+```
+
 #calculate linear regression between 5m and MBA
 
 ```{r}
@@ -245,3 +259,4 @@ lm_mba_5m <- subset(merged_long, Method == "MBA")
 lm_mba_5m <- lm(lm_mba_5m$Count_5m_L ~ lm_mba_5m$Tox_ug_100g)
 summary(lm_mba_5m)
 ```
+
