@@ -11,12 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #code to generate plot of PST levels over the course of the summer (Figure 4 in manuscript?)
 
-#install packages (ggplot2, ggpubr, & ggpmisc for creating figure)
+#install packages (ggplot2, ggpubr, ggpmisc, & patchwork for creating figure)
 
 ```{r}
 #install.packages("ggplot2")
 #install.packages("ggpubr")
 #install.package("ggpmisc")
+#install.packages("patchwork")
 ```
 
 #load libraries
@@ -25,6 +26,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(ggpubr)
 library(ggpmisc)
+library(patchwork)
 ```
 
 #read in ELISA PSTs data
@@ -39,7 +41,7 @@ qpcr_quant <- read.csv("../Data/Alexandrium_qPCR_Results.csv")
 
 ```{r}
 oyster_psts$Date <- as.Date(oyster_psts$Date, "%m/%d/%Y")
-alex_count$Date <- as.Date(alex$Date, "%m/%d/%Y")
+alex_count$Date <- as.Date(alex_count$Date, "%m/%d/%Y")
 qpcr_quant$Date <- as.Date(qpcr_quant$Date, "%m/%d/%Y")
 qpcr_quant <- subset(qpcr_quant, qpcr_quant$Sample_Type == "Sample")
 qpcr_quant <- subset(qpcr_quant, qpcr_quant$Quantity_Mean >= 63.98)
@@ -154,7 +156,7 @@ corr_1m_tox <- ggplot(merged_long, aes(x = Count_1m_L, y = Tox_ug_100g, color = 
   stat_poly_line(se = FALSE, size = 2) +
   stat_poly_eq(use_label(c("R2", "p"))) +
   theme_pubr() +
-  xlab("Alexandrium Count (cells/L)") +
+  xlab("A. catenella Count (cells/L)") +
   ylab("PSTs (ug/100g)") +
   theme(legend.position = "right") +
   geom_hline(yintercept = 80, linetype = "dashed") +
@@ -174,7 +176,7 @@ corr_5m_tox <- ggplot(merged_long, aes(x = Count_5m_L, y = Tox_ug_100g, color = 
   stat_poly_line(se = FALSE, size = 2) +
   stat_poly_eq(use_label(c("R2", "p"))) +
   theme_pubr() +
-  xlab("Alexandrium Count (cells/L)") +
+  xlab("A. catenella Count (cells/L)") +
   ylab("PSTs (ug/100g)") +
   theme(legend.position = "right") +
   geom_hline(yintercept = 80, linetype = "dashed") +
@@ -194,7 +196,7 @@ corr_net_tox <- ggplot(merged_long, aes(x = Count_Net, y = Tox_ug_100g, color = 
   stat_poly_line(se = FALSE, size = 2) +
   stat_poly_eq(use_label(c("R2", "p"))) +
   theme_pubr() +
-  xlab("Alexandrium Count (cells)") +
+  xlab("A. catenella Count (cells)") +
   ylab("PSTs (ug/100g)") +
   theme(legend.position = "right") +
   geom_hline(yintercept = 80, linetype = "dashed") +
