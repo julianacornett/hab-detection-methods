@@ -39,7 +39,7 @@ qpcr_quant <- read.csv("../Data/Alexandrium_qPCR_Results.csv")
 
 ```{r}
 oyster_psts$Date <- as.Date(oyster_psts$Date, "%m/%d/%Y")
-alex_count$Date <- as.Date(alex$Date, "%m/%d/%Y")
+alex_count$Date <- as.Date(alex_count$Date, "%m/%d/%Y")
 qpcr_quant$Date <- as.Date(qpcr_quant$Date, "%m/%d/%Y")
 qpcr_quant <- subset(qpcr_quant, qpcr_quant$Sample_Type == "Sample")
 qpcr_quant <- subset(qpcr_quant, qpcr_quant$Quantity_Mean >= 63.98)
