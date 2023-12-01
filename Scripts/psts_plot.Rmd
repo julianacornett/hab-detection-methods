@@ -48,7 +48,7 @@ qpcr_quant <- subset(qpcr_quant, qpcr_quant$Quantity_Mean >= 63.98)
 ```
 
 ```{r}
-merged_long <- read.csv("../Data/PST_Pairs_Long.csv")
+merged_long <- read.csv("../Data/PST_Pairs_Long_v2.csv")
 ```
 
 #create new df with daily mean quantity
@@ -62,11 +62,11 @@ qpcr_dailyMean <- aggregate(Quantity_Mean ~ Date, data = qpcr_quant, FUN = mean)
 #read in csv
 
 ```{r}
-pst_pairs <- read.csv("../Data/PST_Pairs.csv")
+pst_pairs <- read.csv("../Data/PST_Pairs_v2.csv")
 ```
 
 ```{r}
-elisa_dec_corr <- ggplot(pst_pairs, aes(x = PST_DEC_ug100g, y = PST_ELISA_ug100g)) + 
+elisa_dec_corr <- ggplot(pst_pairs, aes(x = PST_MBA_ug_100g, y = PST_ELISA_ug_100g)) + 
   geom_point(size = 4, shape = 1) + 
   stat_poly_line(se = FALSE, size = 2, color = "black") +
   stat_poly_eq(use_label(c("R2", "p"))) +
@@ -119,7 +119,7 @@ qpcr_tox
 #calculate linear regression between ELISA and MBA
 
 ```{r}
-lm_elisa_mba <- lm(pst_pairs$PST_ELISA_ug100g ~ pst_pairs$PST_DEC_ug100g)
+lm_elisa_mba <- lm(pst_pairs$PST_ELISA_ug_100g ~ pst_pairs$PST_MBA_ug_100g)
 summary(lm_elisa_mba)
 ```
 
