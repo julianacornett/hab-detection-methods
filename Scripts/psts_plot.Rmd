@@ -54,7 +54,7 @@ merged_long <- read.csv("../Data/PST_Pairs_Long_v2.csv")
 #create new df with daily mean quantity
 
 ```{r}
-qpcr_dailyMean <- aggregate(Quantity_Mean ~ Date, data = qpcr_quant, FUN = mean)
+qpcr_dailyMean <- aggregate(Copies_L ~ Date, data = qpcr_quant, FUN = mean)
 ```
 
 #correlation between ELISA and mouse bioassay
@@ -90,6 +90,9 @@ qpcr_pst <- merge(oyster_psts, qpcr_dailyMean)
 ```
 
 #correlation between qPCR versus ELISA and MBA PSTs
+```{r}
+merged_long
+```
 
 ```{r}
   qpcr_tox <- ggplot(merged_long, aes(x = qPCR_qmeandaily, y = Tox_ug_100g, color = Method, fill = Method, shape = Method)) + 
