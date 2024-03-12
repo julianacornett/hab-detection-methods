@@ -38,7 +38,7 @@ library(viridis)
 #high-resolution coastline data (downloaded from https://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html - store file locally on Desktop and navigate to file with relative path because file is too large to push to GitHub)
 
 ```{r}
-map_gshhs <- sf::read_sf('../../gshhg-shp-2.3.7/GSHHS_shp/f/GSHHS_f_L1.shp') 
+map_gshhs <- sf::read_sf('../../EMA/gshhg-shp-2.3.7/GSHHS_shp/f/GSHHS_f_L1.shp') 
 ```
 
 #get natural earth land data
@@ -115,4 +115,87 @@ fig1
 ```{r}
 jpeg("../Figures/Fig1.jpg", width = 8, height = 5, units="in", res=600)
 fig1
+```
+
+#AK map with SEAK inset for web story:
+
+#Bridget Cove site only
+
+```{r}
+bc <- data.frame(Location = c("Sampling Location"), longitude = c(-134.9488), latitude = c(58.6338))
+```
+
+#Juneau only
+
+```{r}
+jnu <- data.frame(Location = c("Juneau, AK"), longitude = c(-134.4201), latitude = c(58.3005))
+```
+
+#AK map
+
+```{r}
+ak_map <- ggplot(data = world) +
+  geom_sf() +
+  coord_sf(xlim = c(-179.8, -115),
+           ylim = c(72, 50),
+           expand = FALSE) +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  scale_x_continuous(breaks = c(-120, -140, -160, -180)) +
+  scale_y_continuous(breaks = c(50, 60, 70)) + 
+  annotation_scale(location = "bl", width_hint = 0.4) +
+  annotation_north_arrow(location = "bl", which_north = "true", 
+        pad_x = unit(0.0, "in"), pad_y = unit(0.2, "in"),
+        style = north_arrow_fancy_orienteering) + 
+  geom_point(data = bc, aes(x = longitude, y = latitude, fill = Location), size = 5, 
+        shape = 21) +
+  theme_pubr() +
+  scale_fill_manual(values = c("black")) +
+  theme(legend.position = "right", legend.title = element_blank()) + 
+  geom_rect(aes(xmin = -138, xmax = -130, ymin = 54.6, ymax = 59.6), fill = "transparent", color = "black") 
+ak_map
+```
+
+#SEAK for inset
+
+```{r}
+seak_v2 <- ggplot() +
+  geom_sf(data = map_gshhs) + 
+  coord_sf(xlim = c(-138, -130), ylim = c(54.6,59.6)) + 
+  theme_pubr() +
+  geom_point(data = bc, aes(x = longitude, y = latitude, fill = Location), size = 5, 
+        shape = 21) +
+  scale_fill_manual(values = c("black")) +
+  geom_label(data = jnu, aes(x = longitude, y = latitude, label = Location, hjust = -1)) +
+  theme(legend.position = "none",
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+   theme(panel.background = element_rect(fill = "white"),
+        panel.ontop = FALSE)
+seak_v2
+```
+
+#map with inset
+
+```{r}
+web_map <- ggdraw(ak_map) +
+  draw_plot(
+    {seak_v2
+      },
+    # The distance along a (0,1) x-axis to draw the left edge of the plot
+    x = 0.422, 
+    # The distance along a (0,1) y-axis to draw the bottom edge of the plot
+    y = 0.634,
+    # The width and height of the plot expressed as proportion of the entire ggdraw object
+    width = 0.35, 
+    height = 0.35) 
+web_map
+```
+
+#save as jpeg
+
+```{r}
+jpeg("../Figures/WebStoryMap.jpg", width = 8, height = 5, units="in", res=600)
+web_map
 ```
