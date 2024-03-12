@@ -156,6 +156,13 @@ ak_map <- ggplot(data = world) +
 ak_map
 ```
 
+#save as jpeg
+
+```{r}
+jpeg("../Figures/AKMap.jpg", width = 8, height = 5, units="in", res=1200)
+ak_map
+```
+
 #SEAK for inset
 
 ```{r}
@@ -163,16 +170,23 @@ seak_v2 <- ggplot() +
   geom_sf(data = map_gshhs) + 
   coord_sf(xlim = c(-138, -130), ylim = c(54.6,59.6)) + 
   theme_pubr() +
-  geom_point(data = bc, aes(x = longitude, y = latitude, fill = Location), size = 5, 
+  geom_point(data = bc, aes(x = longitude, y = latitude, fill = Location), size = 3, 
         shape = 21) +
   scale_fill_manual(values = c("black")) +
-  geom_label(data = jnu, aes(x = longitude, y = latitude, label = Location, hjust = -1)) +
+  #geom_label(data = jnu, aes(x = longitude, y = latitude, label = Location, vjust = -0.1), size = 1.5) +
   theme(legend.position = "none",
         axis.title = element_blank(),
         axis.text = element_blank(),
         axis.ticks = element_blank()) +
    theme(panel.background = element_rect(fill = "white"),
         panel.ontop = FALSE)
+seak_v2
+```
+
+#save as jpeg
+
+```{r}
+jpeg("../Figures/JNUMap.jpg", width = 1.5, height = 2, units="in", res=1200)
 seak_v2
 ```
 
@@ -184,12 +198,12 @@ web_map <- ggdraw(ak_map) +
     {seak_v2
       },
     # The distance along a (0,1) x-axis to draw the left edge of the plot
-    x = 0.422, 
+    x = 0.46, 
     # The distance along a (0,1) y-axis to draw the bottom edge of the plot
-    y = 0.634,
+    y = 0.521,
     # The width and height of the plot expressed as proportion of the entire ggdraw object
-    width = 0.35, 
-    height = 0.35) 
+    width = 0.4, 
+    height = 0.4) 
 web_map
 ```
 
