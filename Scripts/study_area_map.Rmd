@@ -152,8 +152,8 @@ ak_map <- ggplot(data = world) +
   theme_pubr() +
   scale_fill_manual(values = c("black")) +
   theme(legend.position = "right", legend.title = element_blank()) + 
-  geom_rect(aes(xmin = -138, xmax = -133, ymin = 56, ymax = 59.5), fill = "transparent", color = "black") +
-   geom_label(data = jnu, aes(x = longitude, y = latitude, label = Location, hjust = -0.1, vjust = 0.1), size = 3) 
+  geom_rect(aes(xmin = -138, xmax = -133, ymin = 56, ymax = 59.5), fill = "transparent", color = "black") 
+  #geom_label(data = jnu, aes(x = longitude, y = latitude, label = Location, hjust = -0.1, vjust = 0.1), size = 3) 
 ak_map
 ```
 
