@@ -213,3 +213,5 @@ web_map
 jpeg("../Figures/WebStoryMap.jpg", width = 8, height = 5, units="in", res=600)
 web_map
 ```
+
+#updates: add Juneau as label on larger map; zoom in more on inset
