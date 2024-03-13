@@ -147,12 +147,12 @@ ak_map <- ggplot(data = world) +
   annotation_north_arrow(location = "bl", which_north = "true", 
         pad_x = unit(0.0, "in"), pad_y = unit(0.2, "in"),
         style = north_arrow_fancy_orienteering) + 
-  geom_point(data = bc, aes(x = longitude, y = latitude, fill = Location), size = 5, 
+  geom_point(data = bc, aes(x = longitude, y = latitude, fill = Location), size = 3, 
         shape = 21) +
   theme_pubr() +
   scale_fill_manual(values = c("black")) +
   theme(legend.position = "right", legend.title = element_blank()) + 
-  geom_rect(aes(xmin = -138, xmax = -130, ymin = 54.6, ymax = 59.6), fill = "transparent", color = "black") +
+  geom_rect(aes(xmin = -138, xmax = -133, ymin = 56, ymax = 59.5), fill = "transparent", color = "black") +
    geom_label(data = jnu, aes(x = longitude, y = latitude, label = Location, hjust = -0.1, vjust = 0.1), size = 3) 
 ak_map
 ```
@@ -169,7 +169,7 @@ ak_map
 ```{r}
 seak_v2 <- ggplot() +
   geom_sf(data = map_gshhs) + 
-  coord_sf(xlim = c(-138, -130), ylim = c(54.6,59.6)) + 
+  coord_sf(xlim = c(-138, -133), ylim = c(56,59.5)) + 
   theme_pubr() +
   geom_point(data = bc, aes(x = longitude, y = latitude, fill = Location), size = 3, 
         shape = 21) +
@@ -213,5 +213,3 @@ web_map
 jpeg("../Figures/WebStoryMap.jpg", width = 8, height = 5, units="in", res=600)
 web_map
 ```
-
-#updates: add Juneau as label on larger map; zoom in more on inset
