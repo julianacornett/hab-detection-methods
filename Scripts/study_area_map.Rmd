@@ -152,7 +152,8 @@ ak_map <- ggplot(data = world) +
   theme_pubr() +
   scale_fill_manual(values = c("black")) +
   theme(legend.position = "right", legend.title = element_blank()) + 
-  geom_rect(aes(xmin = -138, xmax = -130, ymin = 54.6, ymax = 59.6), fill = "transparent", color = "black") 
+  geom_rect(aes(xmin = -138, xmax = -130, ymin = 54.6, ymax = 59.6), fill = "transparent", color = "black") +
+   geom_label(data = jnu, aes(x = longitude, y = latitude, label = Location, hjust = -0.1, vjust = 0.1), size = 3) 
 ak_map
 ```
 
@@ -173,7 +174,6 @@ seak_v2 <- ggplot() +
   geom_point(data = bc, aes(x = longitude, y = latitude, fill = Location), size = 3, 
         shape = 21) +
   scale_fill_manual(values = c("black")) +
-  #geom_label(data = jnu, aes(x = longitude, y = latitude, label = Location, vjust = -0.1), size = 1.5) +
   theme(legend.position = "none",
         axis.title = element_blank(),
         axis.text = element_blank(),
