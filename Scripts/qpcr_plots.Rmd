@@ -58,6 +58,7 @@ qpcr_sub <- subset(qpcr_samp, qpcr_samp$Quantity_Mean >= 63.98)
 ```{r}
 Quant_dailyMean <- aggregate(Copies_L ~ Date, data = qpcr_sub, FUN = mean)
 Quant_dailyMean$Date <- as.Date(Quant_dailyMean$Date, "%m/%d/%Y")
+write.csv(Quant_dailyMean, "../Data/Alexandrium_qPCR_Results_DailyMean.csv")
 ```
 
 #regressions
