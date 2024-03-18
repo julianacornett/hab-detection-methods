@@ -80,12 +80,19 @@ count_sub$Date <- as.Date(count_sub$Date, "%m/%d/%Y")
 
 ```{r}
 count_qpcr <- merge(Quant_dailyMean, count_sub)
+count_qpcr
+```
+
+#add log-transformed qpcr column
+
+```{r}
+count_qpcr$log_qpcr <- log(count_qpcr$Copies_L)
 ```
 
 #linear regression between qpcr and net tow
 
 ```{r}
-lm_net_qpcr <- lm(count_qpcr$Copies_L ~ count_qpcr$Count_Net)
+lm_net_qpcr <- lm(count_qpcr$log_qpcr ~ count_qpcr$Count_Net)
 summary(lm_net_qpcr)
 ```
 
