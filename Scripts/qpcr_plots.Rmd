@@ -50,13 +50,13 @@ qpcr_samp <- subset(qpcr, qpcr$Sample_Type == "Sample")
 #subset to remove values below LOD/LOQ (63.98 copies)
 
 ```{r}
-qpcr_sub <- subset(qpcr_samp, qpcr_samp$Quantity_Mean >= 63.98)
+qpcr_sub <- subset(qpcr_samp, qpcr_samp$Quantity_Corrected >= 63.98)
 ```
 
 #create new df with daily mean quantity
 
 ```{r}
-Quant_dailyMean <- aggregate(Copies_L ~ Date, data = qpcr_sub, FUN = mean)
+Quant_dailyMean <- aggregate(Copies_L_Corrected ~ Date, data = qpcr_sub, FUN = mean)
 Quant_dailyMean$Date <- as.Date(Quant_dailyMean$Date, "%m/%d/%Y")
 write.csv(Quant_dailyMean, "../Data/Alexandrium_qPCR_Results_DailyMean.csv")
 ```
