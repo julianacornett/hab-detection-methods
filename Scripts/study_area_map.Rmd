@@ -240,29 +240,42 @@ seak_area_updated
 #ak inset
 
 ```{r}
-ak_map <- ggplot(data = world) +
+ak_map_updated <- ggplot(data = world) +
   geom_sf() +
   coord_sf(xlim = c(-179.8, -115),
            ylim = c(72, 50),
            expand = FALSE) +
-  xlab("Longitude") +
-  ylab("Latitude") +
-  scale_x_continuous(breaks = c(-120, -140, -160, -180)) +
-  scale_y_continuous(breaks = c(50, 60, 70)) + 
-  annotation_scale(location = "bl", width_hint = 0.4) +
-  annotation_north_arrow(location = "bl", which_north = "true", 
-        pad_x = unit(0.0, "in"), pad_y = unit(0.2, "in"),
-        style = north_arrow_fancy_orienteering) + 
-  geom_point(data = bc, aes(x = longitude, y = latitude, fill = Location), size = 3, 
-        shape = 21) +
   theme_pubr() +
-  scale_fill_manual(values = c("black")) +
-  theme(legend.position = "right", legend.title = element_blank()) + 
-  geom_rect(aes(xmin = -138, xmax = -133, ymin = 56, ymax = 59.5), fill = "transparent", color = "black") 
-  #geom_label(data = jnu, aes(x = longitude, y = latitude, label = Location, hjust = -0.1, vjust = 0.1), size = 3) 
-ak_map
+  theme(legend.position = "none",
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+   theme(panel.background = element_rect(fill = "white"),
+        panel.ontop = FALSE) +
+  geom_rect(aes(xmin = -138, xmax = -132, ymin = 56, ymax = 59.5), fill = "transparent", color = "black", size = 1) 
+ak_map_updated
 ```
 
 #combined
 
+```{r}
+map_updated <- ggdraw(seak_area_updated) +
+  draw_plot(
+    {ak_map_updated
+      },
+    # The distance along a (0,1) x-axis to draw the left edge of the plot
+    x = 0.5, 
+    # The distance along a (0,1) y-axis to draw the bottom edge of the plot
+    y = 0.6,
+    # The width and height of the plot expressed as proportion of the entire ggdraw object
+    width = 0.25, 
+    height = 0.25) 
+map_updated
+```
+
 #save as jpeg
+
+```{r}
+jpeg("../Figures/Fig1.jpg", width = 8, height = 5, units="in", res=600)
+map_updated
+```
