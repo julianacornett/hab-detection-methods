@@ -86,7 +86,7 @@ count_qpcr
 #add log-transformed qpcr column
 
 ```{r}
-count_qpcr$log_qpcr <- log(count_qpcr$Copies_L)
+count_qpcr$log_qpcr <- log(count_qpcr$Copies_L_Corrected)
 ```
 
 #linear regression between qpcr and net tow
@@ -102,6 +102,7 @@ summary(lm_net_qpcr)
 
 ```{r}
 count_depths <- read.csv("../Data/Count_qPCR_Depths.csv")
+count_depths
 ```
 
 ```{r}
