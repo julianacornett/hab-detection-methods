@@ -1,0 +1,72 @@
+---
+title: "timeseries_plots"
+author: "Juliana Cornett"
+date: "2024-03-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## timeseries plots
+
+#install packages
+
+```{r}
+#install.packages("tidyverse")
+#install.packages("ggpubr")
+```
+
+#load libraries
+
+```{r}
+library(tidyverse)
+library(ggpubr)
+```
+
+#read in data
+
+```{r}
+psts <- read.csv("../Data/Oyster_PSTs.csv")
+alex <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
+qpcr <- read.csv("../Data/Alexandrium_qPCR_Results.csv")
+```
+
+#format 
+
+```{r}
+psts$Date <- as.Date(psts$Date, "%m/%d/%Y")
+alex$Date <- as.Date(alex$Date, "%m/%d/%Y")
+qpcr$Date <- as.Date(qpcr$Date, "%m/%d/%Y")
+qpcr <- subset(qpcr, qpcr$Sample_Type == "Sample")
+qpcr <- subset(qpcr, qpcr$Quantity_Corrected >= 63.98)
+```
+
+#counts timeseries
+
+#psts timeseries
+
+```{r}
+pst_time <- ggplot(psts, aes(x = Date, y = Tox_ug_100g, fill = Method, shape = Method)) + 
+  scale_fill_manual(values = c("black", "darkgray"), labels = c("MBA", "ELISA")) +
+  scale_shape_manual(values = c(24, 21), labels = c("MBA", "ELISA")) +
+  geom_point(size = 4, color = "black", alpha = 0.75) +
+  theme_pubr() +
+  theme(legend.position = "right") +
+  labs(
+    x = element_blank(),
+    y = "PSTs (\u00b5g/100g)")  +
+  geom_hline(yintercept = 80, linetype = "dashed") +
+  geom_hline(yintercept = 34, linetype = "dotted")
+pst_time
+```
+
+#save as jpeg
+
+```{r}
+jpeg("../Figures/Fig7.jpg", width = 8, height = 5, units="in", res=600)
+pst_time
+```
+
+
