@@ -93,12 +93,29 @@ counts_time
 #add legend for different methods
 ```
 
+#try with gather
+
+```{r}
+counts_gathered <- gather(alex, key = Method, value = count, c("Count_Net", "Count_1m_L", "Count_5m_L"))
+
+counts_time_v2 <- ggplot(counts_gathered, aes(x = Date, y = count, group = Method, fill = Method, shape = Method)) +
+  scale_fill_manual(values = c("darkgray", "black", "white")) +
+  scale_shape_manual(values = c(21, 24, 22), labels = c("1m", "5m", "Net Tow")) +
+  guides(fill = "none") +
+  geom_point(size = 3, alpha = 0.75) +
+  theme_pubr() +
+  labs(x = element_blank(), y = "Count (Cells/L for 1m or 5m; Cells for Net Tow)") + 
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +
+  annotate("text", x=as.Date("2023-10-01"), y=1500, label = "A", size = 5) 
+counts_time_v2
+```
+
 #qpcr timeseries (B)
 
 ```{r}
 qpcr_mean <- aggregate(Copies_L_Corrected ~ Date, data = qpcr, FUN = mean)
 qpcr_time <- ggplot(qpcr_mean, aes(x = Date, y = Copies_L_Corrected)) + 
-  geom_point(size = 3, shape = 1) + 
+  geom_point(size = 3, shape = 25) + 
   theme_pubr() + 
   scale_y_continuous(trans="log10") +
   labs(x = element_blank(), y = "qPCR Quantity (Copy Number/L; Log-transformed)") +
@@ -110,6 +127,6 @@ qpcr_time <- ggplot(qpcr_mean, aes(x = Date, y = Copies_L_Corrected)) +
 
 ```{r}
 jpeg("../Figures/Fig8.jpg", width = 8, height = 10, units="in", res=600)
-counts_time /
+counts_time_v2 /
   qpcr_time
 ```
