@@ -151,3 +151,13 @@ lm_5m_qpcr <- lm(lm_5m_qpcr$log_qpcr ~ lm_5m_qpcr$Count_L)
 summary(lm_5m_qpcr)
 ```
 
+#cells per L (based on Vandersea et al., 2018 11,107 copies per cell)
+
+```{r}
+Quant_dailyMean$Cells_L = Quant_dailyMean$Copies_L_Corrected/11107
+Quant_dailyMean
+
+max(Quant_dailyMean$Cells_L)
+min(Quant_dailyMean$Cells_L)
+```
+
