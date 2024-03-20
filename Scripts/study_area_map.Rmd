@@ -264,9 +264,9 @@ map_updated <- ggdraw(seak_area_updated) +
     {ak_map_updated
       },
     # The distance along a (0,1) x-axis to draw the left edge of the plot
-    x = 0.5, 
+    x = 0.47, 
     # The distance along a (0,1) y-axis to draw the bottom edge of the plot
-    y = 0.6,
+    y = 0.735,
     # The width and height of the plot expressed as proportion of the entire ggdraw object
     width = 0.25, 
     height = 0.25) 
