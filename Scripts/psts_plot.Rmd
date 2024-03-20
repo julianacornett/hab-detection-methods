@@ -71,8 +71,8 @@ elisa_dec_corr <- ggplot(pst_pairs, aes(x = PST_MBA_ug_100g, y = PST_ELISA_ug_10
   stat_poly_line(se = FALSE, size = 2, color = "black") +
   stat_poly_eq(use_label(c("R2", "p"))) +
   theme_pubr() +
-  xlab("PSTs from mouse bioassay (ug/100g)") +
-  ylab("PSTs from ELISA (ug/100g)")
+  xlab("PSTs from mouse bioassay (\u00b5g/100g)") +
+  ylab("PSTs from ELISA (\u00b5g/100g)")
 elisa_dec_corr
 ```
 
@@ -101,9 +101,10 @@ qpcr_pst <- merge(oyster_psts, qpcr_dailyMean)
   stat_poly_eq(use_label(c("R2", "p"))) +
   scale_x_continuous(trans="log10") +
   theme_pubr() +
-  xlab("Mean A. catenella qPCR Quantity (Copy Number/L; Log-transformed)") +
-  ylab("PSTs (ug/100g)") +
-  theme(legend.position = "right") +
+  labs(
+    x = "Mean *A. catenella* qPCR Quantity (Copy Number/L; Log-transformed)",
+    y = "PSTs (\u00b5g/100g)") +
+  theme(legend.position = "right", axis.title.x = ggtext::element_markdown(), axis.title.y = ggtext::element_markdown()) +
   geom_hline(yintercept = 80, linetype = "dashed") +
   geom_hline(yintercept = 34, linetype = "dotted")
 qpcr_tox
@@ -156,9 +157,10 @@ corr_1m_tox <- ggplot(merged_long, aes(x = Count_1m_L, y = Tox_ug_100g, color = 
   stat_poly_line(se = FALSE, size = 2) +
   stat_poly_eq(use_label(c("R2", "p"))) +
   theme_pubr() +
-  xlab("A. catenella Count (cells/L)") +
-  ylab("PSTs (ug/100g)") +
-  theme(legend.position = "right") +
+  labs(
+    x = "*A. catenella* Count (cells/L)",
+    y = "PSTs (\u00b5g/100g)") +
+  theme(legend.position = "right", axis.title.x = ggtext::element_markdown()) +
   geom_hline(yintercept = 80, linetype = "dashed") +
   geom_hline(yintercept = 34, linetype = "dotted") +
   annotate("text", x=1450, y=250, label = "A", size = 5) 
@@ -176,9 +178,10 @@ corr_5m_tox <- ggplot(merged_long, aes(x = Count_5m_L, y = Tox_ug_100g, color = 
   stat_poly_line(se = FALSE, size = 2) +
   stat_poly_eq(use_label(c("R2", "p"))) +
   theme_pubr() +
-  xlab("A. catenella Count (cells/L)") +
-  ylab("PSTs (ug/100g)") +
-  theme(legend.position = "right") +
+  labs(
+    x = "*A. catenella* Count (cells/L)",
+    y = "PSTs (\u00b5g/100g)") +
+  theme(legend.position = "right", axis.title.x = ggtext::element_markdown()) +
   geom_hline(yintercept = 80, linetype = "dashed") +
   geom_hline(yintercept = 34, linetype = "dotted") +
   annotate("text", x=1450, y=250, label = "B", size = 5) 
@@ -196,9 +199,10 @@ corr_net_tox <- ggplot(merged_long, aes(x = Count_Net, y = Tox_ug_100g, color = 
   stat_poly_line(se = FALSE, size = 2) +
   stat_poly_eq(use_label(c("R2", "p"))) +
   theme_pubr() +
-  xlab("A. catenella Count (cells)") +
-  ylab("PSTs (ug/100g)") +
-  theme(legend.position = "right") +
+  labs(
+    x = "*A. catenella* Count (cells)",
+    y = "PSTs (\u00b5g/100g)") +
+  theme(legend.position = "right", axis.title.x = ggtext::element_markdown()) +
   geom_hline(yintercept = 80, linetype = "dashed") +
   geom_hline(yintercept = 34, linetype = "dotted") +
   annotate("text", x=8.5, y=250, label = "C", size = 5) 
