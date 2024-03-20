@@ -159,5 +159,8 @@ Quant_dailyMean
 
 max(Quant_dailyMean$Cells_L)
 min(Quant_dailyMean$Cells_L)
+
+Quant_dailyMean_elevated <- subset(Quant_dailyMean, Cells_L >= 300)
+Quant_dailyMean_elevated
 ```
 
