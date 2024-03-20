@@ -43,8 +43,6 @@ qpcr <- subset(qpcr, qpcr$Sample_Type == "Sample")
 qpcr <- subset(qpcr, qpcr$Quantity_Corrected >= 63.98)
 ```
 
-#counts timeseries
-
 #psts timeseries
 
 ```{r}
@@ -69,4 +67,31 @@ jpeg("../Figures/Fig7.jpg", width = 8, height = 5, units="in", res=600)
 pst_time
 ```
 
+#counts timeseries
+
+#microscope timeseries (A) - one axis for cells (net) and one for cells/L (1m and 5m)
+
+```{r}
+alex
+```
+
+#qpcr timeseries (B)
+
+```{r}
+qpcr_mean <- aggregate(Copies_L_Corrected ~ Date, data = qpcr, FUN = mean)
+qpcr_time <- ggplot(qpcr_mean, aes(x = Date, y = Copies_L_Corrected)) + 
+  geom_point(size = 4, shape = 1) + 
+  theme_pubr() + 
+  scale_y_continuous(trans="log10") +
+  labs(x = element_blank(), y = "Mean *A. catenella* qPCR Quantity (Copy Number/L; Log-transformed)") +
+  theme(axis.title.y = ggtext::element_markdown()) +
+  annotate("text", x=as.Date("2023-10-01"), y=1e+09, label = "A", size = 5)
+ qpcr_time
+```
+
+#combined jpeg
+
+```{r}
+
+```
 
