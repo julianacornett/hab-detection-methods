@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 #install.packages("tidyverse")
 #install.packages("ggpubr")
+#install.packages("patchwork")
 ```
 
 #load libraries
@@ -23,6 +24,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(ggpubr)
+library(patchwork)
 ```
 
 #read in data
@@ -72,7 +74,17 @@ pst_time
 #microscope timeseries (A) - one axis for cells (net) and one for cells/L (1m and 5m)
 
 ```{r}
-alex
+counts_time <- ggplot(alex, aes(x=Date)) +
+  
+  geom_point(aes(y=Count_Net), fill = "white", shape = 22, size = 3, alpha = 0.75) + 
+  geom_point(aes(y=Count_1m_L), fill = "darkgray", shape = 21, size = 3, alpha = 0.75) +
+  geom_point(aes(y=Count_5m_L), fill = "black", shape = 24, size = 3, alpha = 0.75) +
+  theme_pubr() +
+  annotate("text", x=as.Date("2023-10-01"), y=1500, label = "A", size = 5) +
+  labs(x = element_blank(), y = "*A. catenella* Count (Cells for Net; Cells/L for 1m & 5m)") + 
+  theme(axis.title.y = ggtext::element_markdown(), axis.text.x = element_blank(), axis.ticks.x = element_blank()) 
+
+counts_time
 ```
 
 #qpcr timeseries (B)
@@ -83,15 +95,16 @@ qpcr_time <- ggplot(qpcr_mean, aes(x = Date, y = Copies_L_Corrected)) +
   geom_point(size = 4, shape = 1) + 
   theme_pubr() + 
   scale_y_continuous(trans="log10") +
-  labs(x = element_blank(), y = "Mean *A. catenella* qPCR Quantity (Copy Number/L; Log-transformed)") +
+  labs(x = element_blank(), y = "*A. catenella* Quantity (Copy Number/L; Log-transformed)") +
   theme(axis.title.y = ggtext::element_markdown()) +
-  annotate("text", x=as.Date("2023-10-01"), y=1e+09, label = "A", size = 5)
+  annotate("text", x=as.Date("2023-10-01"), y=1e+09, label = "B", size = 5)
  qpcr_time
 ```
 
-#combined jpeg
+#save as combined jpeg
 
 ```{r}
-
+jpeg("../Figures/Fig8.jpg", width = 8, height = 10, units="in", res=600)
+counts_time /
+  qpcr_time
 ```
-
