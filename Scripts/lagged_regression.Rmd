@@ -82,6 +82,45 @@ ggplot(df_merged_elisa_na, aes(x = qpcrlag1, y = Tox_ug_100g)) + geom_point()
 
 #log transformed qpcr
 df_merged_elisa_na$log_qpcr <- log(df_merged_elisa_na$Copies_L_Corrected)
+ccf(df_merged_elisa_na$log_qpcr, df_merged_elisa_na$Tox_ug_100g)
+lag2.plot(df_merged_elisa_na$log_qpcr, df_merged_elisa_na$Tox_ug_100g, 1)
+
+logqpcrlag1 = lag(df_merged_elisa_na$log_qpcr, 1)
+summary(lm(Tox_ug_100g~logqpcrlag1, data = df_merged_elisa_na))
+ggplot(df_merged_elisa_na, aes(x = logqpcrlag1, y = Tox_ug_100g)) + geom_point() + 
+  stat_poly_line(se = FALSE, size = 2, color = "black") +
+  stat_poly_eq(use_label(c("R2", "p"))) +
+  theme_pubr() +
+  xlab("log-transformed qPCR (copies/L) at t-1") +
+  ylab("PSTs from ELISA (\u00b5g/100g)")
 ```
 
 #cross correlation function - MBA
+
+#read in data with MBA values paired to other measures <48 hours
+
+```{r}
+df_paired <- read.csv("../Data/PST_Pairs_Long_v2.csv")
+df_paired_mba <- subset(df_paired, Method == "MBA")
+```
+
+#ccf
+
+```{r}
+#net tow vs. MBA
+ccf(df_paired_mba$Count_Net, df_paired_mba$Tox_ug_100g)
+
+#1m vs. MBA
+ccf(df_paired_mba$Count_1m_L, df_paired_mba$Tox_ug_100g)
+
+#5m vs. MBA
+ccf(df_paired_mba$Count_5m_L, df_paired_mba$Tox_ug_100g)
+
+#qPCR vs. MBA
+ccf(df_paired_mba$Copies_L, df_paired_mba$Tox_ug_100g)
+
+#log qPCR vs. MBA
+df_paired_mba$log_qpcr <- log(df_paired_mba$Copies_L)
+ccf(df_paired_mba$log_qpcr, df_paired_mba$Tox_ug_100g)
+```
+
