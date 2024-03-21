@@ -36,6 +36,8 @@ pst_counts <- read.csv("../Data/PST_Pairs_Long_v2.csv")
 pst_counts_mba <- subset(pst_counts, Method == "MBA")
 ```
 
+#TOBIT MODELS
+
 #tobit model for MBA~ELISA
 
 ```{r}
@@ -77,5 +79,13 @@ summary(tobit_qpcr)
 pst_counts_mba$logqpcr <- log(pst_counts_mba$Copies_L)
 tobit_log_qpcr = tobit(Tox_ug_100g~logqpcr, data = pst_counts_mba, left = 34)
 summary(tobit_log_qpcr)
+```
+
+#IMPUTE NONDETECTS WITH ROS
+
+```{r}
+pst_combined <- merge(pst, pst_counts_mba, by = "Pair") 
+pst_combined <- select(pst_combined, c("Pair", "PST_ELISA_ug_100g", "Date_ELISA", "PST_MBA_ug_100g", "Date_MBA", "Count_1m_L", "Count_5m_L", "Count_Net", "Copies_L", "logqpcr"))
+pst_combined
 ```
 
