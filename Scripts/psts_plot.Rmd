@@ -83,6 +83,29 @@ jpeg("../Figures/Fig3.jpg", width = 8, height = 5, units="in", res=600)
 elisa_dec_corr
 ```
 
+#alternate with only MBA >34
+
+```{r}
+pst_pairs_34 <- subset(pst_pairs, PST_MBA_ug_100g > 34)
+pst_pairs_34
+
+elisa_mba_34 <- ggplot(pst_pairs_34, aes(x = PST_MBA_ug_100g, y = PST_ELISA_ug_100g)) + 
+  geom_point(size = 4, shape = 1) + 
+  stat_poly_line(se = FALSE, size = 2, color = "black") +
+  stat_poly_eq(use_label(c("R2", "p"))) +
+  theme_pubr() +
+  xlab("PSTs from mouse bioassay (\u00b5g/100g)") +
+  ylab("PSTs from ELISA (\u00b5g/100g)")
+elisa_mba_34
+```
+
+#save as jpeg
+
+```{r}
+jpeg("../Figures/Fig3_34.jpg", width = 8, height = 5, units="in", res=600)
+elisa_mba_34
+```
+
 #add log-transformed qpcr column
 
 ```{r}
