@@ -114,12 +114,12 @@ counts_time_v2
 
 ```{r}
 qpcr_mean <- aggregate(Copies_L_Corrected ~ Date, data = qpcr, FUN = mean)
-qpcr_time <- ggplot(qpcr_mean, aes(x = Date, y = Copies_L_Corrected)) + 
+qpcr_mean$log_qpcr <- log(qpcr_mean$Copies_L_Corrected)
+qpcr_time <- ggplot(qpcr_mean, aes(x = Date, y = log_qpcr)) + 
   geom_point(size = 3, shape = 25) + 
   theme_pubr() + 
-  scale_y_continuous(trans="log10") +
   labs(x = element_blank(), y = "qPCR Quantity (Copy Number/L; Log-transformed)") +
-  annotate("text", x=as.Date("2023-10-01"), y=1e+09, label = "B", size = 5)
+  annotate("text", x=as.Date("2023-10-01"), y=21, label = "B", size = 5)
  qpcr_time
 ```
 
