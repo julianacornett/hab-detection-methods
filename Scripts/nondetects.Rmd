@@ -22,3 +22,31 @@ install.packages("EnvStats")
 #qqPlotCensored produces Q-Q plot for left-censored data
 ```
 
+#load libraries
+
+```{r}
+library(AER)
+```
+
+#read in data
+
+```{r}
+pst <- read.csv("../Data/PST_Pairs_v2.csv")
+pst_counts <- read.csv("../Data/PST_Pairs_Long_v2.csv") 
+pst_counts_mba <- subset(pst_counts, Method == "MBA")
+```
+
+#tobit model for MBA~ELISA
+
+```{r}
+tobit_pst = tobit(PST_MBA_ug_100g~PST_ELISA_ug_100g, data = pst, left = 34)
+summary(tobit_pst)
+```
+
+#tobit model for MBA~1m
+
+#tobit model for MBA~5m
+
+#tobit model for MBA~net tow
+
+#tobit model for MBA~qPCR
