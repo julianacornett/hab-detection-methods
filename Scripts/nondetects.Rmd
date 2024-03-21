@@ -45,8 +45,37 @@ summary(tobit_pst)
 
 #tobit model for MBA~1m
 
+```{r}
+tobit_1m = tobit(Tox_ug_100g~Count_1m_L, data = pst_counts_mba, left = 34)
+summary(tobit_1m)
+```
+
 #tobit model for MBA~5m
+
+```{r}
+tobit_5m = tobit(Tox_ug_100g~Count_5m_L, data = pst_counts_mba, left = 34)
+summary(tobit_5m)
+```
 
 #tobit model for MBA~net tow
 
+```{r}
+tobit_net = tobit(Tox_ug_100g~Count_Net, data = pst_counts_mba, left = 34)
+summary(tobit_net)
+```
+
 #tobit model for MBA~qPCR
+
+```{r}
+tobit_qpcr = tobit(Tox_ug_100g~Copies_L, data = pst_counts_mba, left = 34)
+summary(tobit_qpcr)
+```
+
+#tobit model on MBA~logqPCR
+
+```{r}
+pst_counts_mba$logqpcr <- log(pst_counts_mba$Copies_L)
+tobit_log_qpcr = tobit(Tox_ug_100g~logqpcr, data = pst_counts_mba, left = 34)
+summary(tobit_log_qpcr)
+```
+
