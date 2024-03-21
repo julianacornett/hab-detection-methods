@@ -1,0 +1,87 @@
+---
+title: "lagged_regression"
+author: "Juliana Cornett"
+date: "2024-03-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## lagged regression for comparing A. catenella counts vs. PSTs
+
+#install packages
+
+```{r}
+#install.packages("tseries")
+#install.packages("tidyverse")
+#install.packages("ggpubr")
+#install.packages("astsa")
+```
+
+#load libraries
+
+```{r}
+library(tseries)
+library(tidyverse)
+library(ggpubr)
+library(astsa)
+```
+
+#read in data
+
+```{r}
+qpcr <- read.csv("../Data/Alexandrium_qPCR_Results.csv")
+pst <- read.csv("../Data/Oyster_PSTs.csv")
+count <- read.csv("../Data/Alexandrium_MicroscopeCounts.csv")
+```
+
+#format
+
+```{r}
+pst$Date <- as.Date(pst$Date, "%m/%d/%Y")
+count$Date <- as.Date(count$Date, "%m/%d/%Y")
+qpcr$Date <- as.Date(qpcr$Date, "%m/%d/%Y")
+qpcr <- subset(qpcr, qpcr$Sample_Type == "Sample")
+qpcr <- subset(qpcr, qpcr$Quantity_Corrected >= 63.98)
+qpcr_mean <- aggregate(Copies_L_Corrected ~ Date, data = qpcr, FUN = mean)
+```
+
+#merge
+
+```{r}
+df_list <- list(qpcr_mean, pst, count)
+df_merged <- Reduce(function(x,y) merge(x,y, all=TRUE), df_list)
+df_merged_elisa <- subset(df_merged, Method == "ELISA")
+df_merged_elisa
+df_merged_elisa_na <- na.omit(df_merged_elisa)
+```
+
+#cross correlation function - ELISA
+
+```{r}
+#net tow vs. ELISA
+ccf(df_merged_elisa$Count_Net, df_merged_elisa$Tox_ug_100g)
+
+#1m vs. ELISA
+values_1m_elisa = ccf(df_merged_elisa$Count_1m_L, df_merged_elisa$Tox_ug_100g)
+values_1m_elisa
+
+#5m vs. ELISA
+ccf(df_merged_elisa$Count_5m_L, df_merged_elisa$Tox_ug_100g)
+
+#qPCR vs. ELISA
+values_qpcr_elisa = ccf(df_merged_elisa_na$Copies_L_Corrected, df_merged_elisa_na$Tox_ug_100g)
+values_qpcr_elisa
+lag2.plot(df_merged_elisa_na$Copies_L_Corrected, df_merged_elisa_na$Tox_ug_100g, 1)
+
+qpcrlag1 = lag(df_merged_elisa_na$Copies_L_Corrected, 1)
+summary(lm(Tox_ug_100g~qpcrlag1, data = df_merged_elisa_na))
+ggplot(df_merged_elisa_na, aes(x = qpcrlag1, y = Tox_ug_100g)) + geom_point()
+
+#log transformed qpcr
+df_merged_elisa_na$log_qpcr <- log(df_merged_elisa_na$Copies_L_Corrected)
+```
+
+#cross correlation function - MBA
