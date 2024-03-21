@@ -89,3 +89,63 @@ pst_combined <- select(pst_combined, c("Pair", "PST_ELISA_ug_100g", "Date_ELISA"
 pst_combined
 ```
 
+```{r}
+#install.packages("NADA")
+#install.packages("lubridate")
+library(NADA)
+library(lubridate)
+```
+
+```{r}
+pst_combined$Date <- as.Date(pst_combined$Date_ELISA, "%m/%d/%Y")
+```
+
+#apply ROS method for MBA <=34
+
+```{r}
+mba_obs <- pst_combined$PST_MBA_ug_100g
+mba_censored <- pst_combined$PST_MBA_ug_100g <= 34
+```
+
+#fit the ROS model
+
+```{r}
+mba_order <- order(pst_combined$PST_MBA_ug_100g, na.last = NA)
+mba_ros <- ros(pst_combined$PST_MBA_ug_100g[mba_order], mba_censored[mba_order])
+```
+
+#extract imputed values
+
+```{r}
+mba_imputed <- mba_ros$modeled
+```
+
+#reorder imputed values based on original dataset order
+
+```{r}
+mba_imputed_reordered <- mba_imputed[order(mba_order)]
+```
+
+#add ROS imputed values to dataframe
+
+```{r}
+pst_combined$ROS_PST_MBA_ug_100g <- ifelse(mba_censored, mba_imputed_reordered, pst_combined$PST_MBA_ug_100g)
+```
+
+#summary of ROS model
+
+```{r}
+summary(mba_ros)
+```
+
+#diagnostic plot
+
+```{r}
+plot(mba_ros)
+```
+
+#export dataframe with imputed values as csv
+
+```{r}
+write.csv(pst_combined, "../Data/ROSImputed_PSTPairs.csv", row.names = FALSE)
+```
