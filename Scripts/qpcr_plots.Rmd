@@ -106,18 +106,23 @@ count_depths <- read.csv("../Data/Count_qPCR_Depths.csv")
 count_depths
 ```
 
+#add log-transformed qpcr column
+
 ```{r}
-qpcr_mic_corr <- ggplot(count_depths, aes(x = Quantity_Mean, y = Count_L, color = Depth, fill = Depth, shape = Depth)) + 
+count_depths$log_qpcr <- log(count_depths$Copies_L)
+```
+
+```{r}
+qpcr_mic_corr <- ggplot(count_depths, aes(x = log_qpcr, y = Count_L, color = Depth, fill = Depth, shape = Depth)) + 
   scale_fill_manual(values = c("darkgray", "black"), labels = c("1m", "5m")) +
   scale_color_manual(values = c("darkgray", "black"), labels = c("1m", "5m")) +
   scale_shape_manual(values = c(21,24)) +
   geom_point(size = 4, color = "black", alpha = 0.75) + 
   stat_poly_line(se = FALSE, size = 2) +
   stat_poly_eq(use_label(c("R2", "p"))) +
-  scale_x_continuous(trans="log10") +
   theme_pubr() + 
   labs(
-    x = "Mean *A. catenella* qPCR Quantity (Copy Number/L; Log-transformed)",
+    x = "Mean log-transformed *A. catenella* qPCR Quantity (Copy Number/L)",
     y = "*A. catenella* Microscope Count (Cells/L)") +
   theme(legend.position = "right", axis.title.x = ggtext::element_markdown(), axis.title.y = ggtext::element_markdown())
 qpcr_mic_corr
@@ -128,12 +133,6 @@ qpcr_mic_corr
 ```{r}
 jpeg("../Figures/Fig2.jpg", width = 8, height = 5, units="in", res=600)
 qpcr_mic_corr
-```
-
-#add log-transformed qpcr column
-
-```{r}
-count_depths$log_qpcr <- log(count_depths$Quantity_Mean)
 ```
 
 #calculate linear regression between 1m and qpcr
@@ -155,13 +154,14 @@ summary(lm_5m_qpcr)
 #cells per L (based on Vandersea et al., 2018 11,107 copies per cell)
 
 ```{r}
-Quant_dailyMean$Cells_L = Quant_dailyMean$Copies_L_Corrected/11107
-Quant_dailyMean
+Quant_dailyMean_cells <- Quant_dailyMean
+Quant_dailyMean_cells$Cells_L = Quant_dailyMean_cells$Copies_L_Corrected/11107
+Quant_dailyMean_cells
 
-max(Quant_dailyMean$Cells_L)
-min(Quant_dailyMean$Cells_L)
+max(Quant_dailyMean_cells$Cells_L)
+min(Quant_dailyMean_cells$Cells_L)
 
-Quant_dailyMean_elevated <- subset(Quant_dailyMean, Cells_L >= 300)
+Quant_dailyMean_elevated <- subset(Quant_dailyMean_cells, Cells_L >= 300)
 Quant_dailyMean_elevated
 ```
 
