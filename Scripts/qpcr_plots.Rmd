@@ -122,7 +122,7 @@ qpcr_mic_corr <- ggplot(count_depths, aes(x = log_qpcr, y = Count_L, color = Dep
   stat_poly_eq(use_label(c("R2", "p"))) +
   theme_pubr() + 
   labs(
-    x = "Mean log-transformed *A. catenella* qPCR Quantity (Copy Number/L)",
+    x = "Mean log-transformed *A. catenella* qPCR Quantity (Copies/L)",
     y = "*A. catenella* Microscope Count (Cells/L)") +
   theme(legend.position = "right", axis.title.x = ggtext::element_markdown(), axis.title.y = ggtext::element_markdown())
 qpcr_mic_corr

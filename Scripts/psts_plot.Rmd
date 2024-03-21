@@ -83,26 +83,25 @@ jpeg("../Figures/Fig3.jpg", width = 8, height = 5, units="in", res=600)
 elisa_dec_corr
 ```
 
-#merge pst and qpcr data
+#add log-transformed qpcr column
 
 ```{r}
-qpcr_pst <- merge(oyster_psts, qpcr_dailyMean)
+merged_long$log_qpcr <- log(merged_long$Copies_L)
 ```
 
 #correlation between qPCR versus ELISA and MBA PSTs
 
 ```{r}
-  qpcr_tox <- ggplot(merged_long, aes(x = qPCR_qmeandaily, y = Tox_ug_100g, color = Method, fill = Method, shape = Method)) + 
+  qpcr_tox <- ggplot(merged_long, aes(x = log_qpcr, y = Tox_ug_100g, color = Method, fill = Method, shape = Method)) + 
   scale_fill_manual(values = c("darkgray", "black"), labels = c("ELISA", "MBA")) +
   scale_color_manual(values = c("darkgray", "black"), labels = c("ELISA", "MBA")) +
   scale_shape_manual(values = c(21,24), labels = c("ELISA", "MBA")) +
   geom_point(size = 4, color = "black", alpha = 0.75) + 
   stat_poly_line(se = FALSE, size = 2) +
   stat_poly_eq(use_label(c("R2", "p"))) +
-  scale_x_continuous(trans="log10") +
   theme_pubr() +
   labs(
-    x = "Mean *A. catenella* qPCR Quantity (Copy Number/L; Log-transformed)",
+    x = "Mean log-transformed *A. catenella* qPCR Quantity (Copies/L)",
     y = "PSTs (\u00b5g/100g)") +
   theme(legend.position = "right", axis.title.x = ggtext::element_markdown(), axis.title.y = ggtext::element_markdown()) +
   geom_hline(yintercept = 80, linetype = "dashed") +
@@ -122,12 +121,6 @@ qpcr_tox
 ```{r}
 lm_elisa_mba <- lm(pst_pairs$PST_ELISA_ug_100g ~ pst_pairs$PST_MBA_ug_100g)
 summary(lm_elisa_mba)
-```
-
-#add log-transformed qpcr column
-
-```{r}
-merged_long$log_qpcr <- log(merged_long$qPCR_qmeandaily)
 ```
 
 #calculate linear regression between qPCR and MBA
