@@ -17,6 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages("tidyverse")
 #install.packages("ggpubr")
 #install.packages("patchwork")
+#install.packages("NADA")
 ```
 
 #load libraries
@@ -25,6 +26,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggpubr)
 library(patchwork)
+library(NADA)
 ```
 
 #read in data
@@ -67,6 +69,54 @@ pst_time
 ```{r}
 jpeg("../Figures/Fig7.jpg", width = 8, height = 5, units="in", res=600)
 pst_time
+```
+
+#PST time series with imputed values for MBA < 34
+
+```{r}
+pst_mba <- subset(psts, Method == "DEC")
+
+#apply ROS method for MBA <=34
+
+pst_obs <- pst_mba$Tox_ug_100g
+pst_censored <- pst_mba$Tox_ug_100g <= 34
+
+#fit the ROS model
+
+pst_order <- order(pst_mba$Tox_ug_100g, na.last = NA)
+pst_ros <- ros(pst_mba$Tox_ug_100g[pst_order], pst_censored[pst_order])
+
+#extract imputed values
+
+pst_imputed <- pst_ros$modeled
+
+#reorder imputed values based on original dataset order
+
+pst_imputed_reordered <- pst_imputed[order(pst_order)]
+
+#add ROS imputed values to dataframe
+
+pst_mba$ROS_PST_MBA_ug_100g <- ifelse(pst_censored, pst_imputed_reordered, pst_mba$Tox_ug_100g)
+
+#plot
+
+psts_ros <- read.csv("../Data/Oyster_PSTs_ROS.csv")
+psts_ros$Date <- as.Date(psts_ros$Date, "%m/%d/%Y")
+pst_ros_time <- ggplot(psts_ros, aes(x = Date, y = Tox_ug_100g, fill = Method, shape = Method)) + 
+  scale_fill_manual(values = c("black", "darkgray"), labels = c("MBA", "ELISA")) +
+  scale_shape_manual(values = c(24, 21), labels = c("MBA", "ELISA")) +
+  geom_point(size = 4, color = "black", alpha = 0.75) +
+  theme_pubr() +
+  theme(legend.position = "right") +
+  labs(
+    x = element_blank(),
+    y = "PSTs (\u00b5g/100g)")  +
+  geom_hline(yintercept = 80, linetype = "dashed") +
+  geom_hline(yintercept = 34, linetype = "dotted")
+pst_ros_time
+
+jpeg("../New Figures/Fig4.jpg", width = 8, height = 5, units="in", res=600)
+pst_ros_time
 ```
 
 #counts timeseries
