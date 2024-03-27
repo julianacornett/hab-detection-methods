@@ -168,7 +168,7 @@ qpcr_mean$log_qpcr <- log(qpcr_mean$Copies_L_Corrected)
 qpcr_time <- ggplot(qpcr_mean, aes(x = Date, y = log_qpcr)) + 
   geom_point(size = 4, color = "black", alpha = 0.75) + 
   theme_pubr() + 
-  labs(x = element_blank(), y = "qPCR Quantity (Copy Number/L; Log-transformed)") 
+  labs(x = element_blank(), y = "*A. catenella* qPCR Quantity (Copies/L)") + theme(axis.title.y = ggtext::element_markdown())
  qpcr_time
 ```
 
