@@ -49,6 +49,7 @@ qpcr_quant <- subset(qpcr_quant, qpcr_quant$Quantity_Corrected >= 63.98)
 
 ```{r}
 merged_long <- read.csv("../Data/PST_Pairs_Long_v2.csv")
+merged_long_imputed <- read.csv("../Data/PST_Pairs_Long_v2_Imputed.csv")
 ```
 
 #create new df with daily mean quantity
@@ -110,6 +111,7 @@ elisa_mba_34
 
 ```{r}
 merged_long$log_qpcr <- log(merged_long$Copies_L)
+merged_long_imputed$log_qpcr <- log(merged_long_imputed$Copies_L)
 ```
 
 #correlation between qPCR versus ELISA and MBA PSTs
@@ -296,6 +298,11 @@ summary(lm_elisa_5m)
 lm_mba_1m <- subset(merged_long, Method == "MBA") 
 lm_mba_1m <- lm(lm_mba_1m$Count_1m_L ~ lm_mba_1m$Tox_ug_100g)
 summary(lm_mba_1m)
+
+#imputed
+lm_mba_1m_i <- subset(merged_long_imputed, Method == "MBA") 
+lm_mba_1m_i <- lm(lm_mba_1m_i$Count_1m_L ~ lm_mba_1m_i$Tox_ug_100g)
+summary(lm_mba_1m_i)
 ```
 
 #calculate linear regression between net tow and MBA
@@ -304,6 +311,11 @@ summary(lm_mba_1m)
 lm_mba_net <- subset(merged_long, Method == "MBA") 
 lm_mba_net <- lm(lm_mba_net$Count_Net ~ lm_mba_net$Tox_ug_100g)
 summary(lm_mba_net)
+
+#imputed
+lm_mba_net_i <- subset(merged_long_imputed, Method == "MBA") 
+lm_mba_net_i <- lm(lm_mba_net_i$Count_Net ~ lm_mba_net_i$Tox_ug_100g)
+summary(lm_mba_net_i)
 ```
 
 #calculate linear regression between 5m and MBA
