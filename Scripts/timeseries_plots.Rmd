@@ -18,6 +18,9 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages("ggpubr")
 #install.packages("patchwork")
 #install.packages("NADA")
+#install.packages("ggtext")
+#install.packages("reshape2")
+#install.packages("cowplot")
 ```
 
 #load libraries
@@ -27,6 +30,9 @@ library(tidyverse)
 library(ggpubr)
 library(patchwork)
 library(NADA)
+library(ggtext)
+library(reshape2)
+library(cowplot)
 ```
 
 #read in data
@@ -140,6 +146,7 @@ counts_time <- ggplot(alex, aes(x=Date)) +
 counts_time
 
 #add legend for different methods
+
 ```
 
 ```{r}
@@ -153,13 +160,39 @@ alex_long$Method[alex_long$Method=="Count_5m_L"] <- "5m"
 
 counts_time_v2 <- ggplot(alex_long, aes(x=Date, y=value, fill = Method, shape = Method)) +
   geom_point(size = 3, alpha = 0.75) +
-  scale_fill_manual(values = c("white", "darkgray", "black")) +
-  scale_shape_manual(values = c(21, 22, 25)) +
+  scale_fill_manual(values = c("darkgray", "black", "white")) +
+  scale_shape_manual(values = c(22, 25, 21)) +
   theme_pubr() +
   labs(x = element_blank()) +
   theme(legend.position = "right")
-  
+
 counts_time_v2
+
+#extract legend
+
+legend_methods <- get_legend(counts_time_v2)
+legend_plot <- as_ggplot(legend_methods)
+```
+
+#final figure (with legend)
+
+```{r}
+counts_time_final <- ggdraw(counts_time) +
+  draw_plot(
+    {legend_methods
+      },
+    # The distance along a (0,1) x-axis to draw the left edge of the plot
+    x = 0, 
+    # The distance along a (0,1) y-axis to draw the bottom edge of the plot
+    y = 0.7,
+    # The width and height of the plot expressed as proportion of the entire ggdraw object
+    width = 0.3, 
+    height = 0.3) 
+
+counts_time_final
+
+jpeg("../New Figures/Fig2.jpg", width = 8, height = 5, units="in", res=600)
+counts_time_final
 ```
 
 #qpcr timeseries (B)
