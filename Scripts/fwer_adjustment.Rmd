@@ -1,0 +1,25 @@
+---
+title: "fwer_adjustment"
+output: html_document
+date: "2024-04-01"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## family-wise error rate correction
+
+create list of p-values from Table 1
+
+```{r}
+p_vals <- data.frame(
+  comparison = c("1m_net", "5m_net", "1m_5m"),
+  pvalue = c(0.8128, 0.1873, 0.05714))
+p_vals
+```
+
+```{r}
+
+```
+
