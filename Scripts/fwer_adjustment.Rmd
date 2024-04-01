@@ -20,6 +20,12 @@ p_vals
 ```
 
 ```{r}
+#p.adjust(p, method = p.adjust.methods, n = length(p))
+#p.adjust.methods
+# c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY",
+#   "fdr", "none")
 
+p_vals_adjusted <- p.adjust(p_vals$pvalue, method = "holm", n = length(p_vals$pvalue))
+p_vals_adjusted
 ```
 
