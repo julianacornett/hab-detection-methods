@@ -14,8 +14,8 @@ create list of p-values from Table 1
 
 ```{r}
 p_vals <- data.frame(
-  comparison = c("1m_net", "5m_net", "1m_5m"),
-  pvalue = c(0.8128, 0.1873, 0.05714))
+  comparison = c("1m_net", "5m_net", "1m_5m", "qPCR_net", "qPCR_1m", "qPCR_5m", "ELISA_net", "ELISA_1m", "ELISA_5m", "ELISA_qPCR", "MBA_net", "MBA_1m", "MBA_5m", "MBA_qPCR", "MBA_ELISA"),
+  pvalue = c(0.8128, 0.1873, 0.05714, 0.097, 0.00385, 0.0151, 0.0051, 0.185, 0.000118, 0.011, 0.000452, 0.218, 7.76e-07, 0.0157, 4.94e-07))
 p_vals
 ```
 
@@ -25,7 +25,16 @@ p_vals
 # c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY",
 #   "fdr", "none")
 
-p_vals_adjusted <- p.adjust(p_vals$pvalue, method = "holm", n = length(p_vals$pvalue))
-p_vals_adjusted
+p_vals_adjusted_holm <- p.adjust(p_vals$pvalue, method = "holm", n = length(p_vals$pvalue))
+p_vals_adjusted_holm
+
+p_vals_adjusted_fdr <- p.adjust(p_vals$pvalue, method = "fdr", n = length(p_vals$pvalue))
+p_vals_adjusted_fdr
 ```
 
+```{r}
+p_vals_adjusted <- p_vals
+p_vals_adjusted$holm <- c(8.1280e-01, 7.4000e-01, 3.4284e-01, 4.8500e-01, 4.2350e-02, 1.2080e-01, 5.1000e-02, 7.4000e-01, 1.5340e-03, 9.9000e-02, 5.4240e-03, 7.4000e-01, 1.0864e-05, 1.2080e-01, 7.4100e-06)
+p_vals_adjusted$fdr <- c(0.81280000, 0.21611538, 0.08571000, 0.13227273, 0.01155000, 0.02616667, 0.01275000, 0.21611538, 0.00059000, 0.02357143, 0.00169500, 0.23357143, 0.00000582, 0.02616667, 0.00000582)
+p_vals_adjusted
+```
