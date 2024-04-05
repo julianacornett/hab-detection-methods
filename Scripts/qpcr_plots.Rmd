@@ -119,7 +119,9 @@ qpcr_mic_corr <- ggplot(count_depths, aes(x = log_qpcr, y = Count_L, color = Dep
   scale_shape_manual(values = c(21,24)) +
   geom_point(size = 4, color = "black", alpha = 0.75) + 
   stat_poly_line(se = FALSE, size = 2) +
-  stat_poly_eq(use_label(c("R2", "p"))) +
+  #stat_poly_eq(use_label(c("R2", "p"))) +
+  geom_text(aes(x = 15, y = 1350, label = "r^2 == 0.38~~~p == 0.01"), parse = TRUE, color = "darkgray", check_overlap = TRUE) +
+  geom_text(aes(x = 15, y = 1250, label = "r^2 == 0.29~~~p == 0.03"), parse = TRUE, color = "black", check_overlap = TRUE) +
   theme_pubr() + 
   labs(
     x = "Mean log-transformed *A. catenella* qPCR Quantity (Copies/L)",
