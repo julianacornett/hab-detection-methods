@@ -21,6 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages("ggtext")
 #install.packages("reshape2")
 #install.packages("cowplot")
+#install.packages("scales")
 ```
 
 #load libraries
@@ -33,6 +34,7 @@ library(NADA)
 library(ggtext)
 library(reshape2)
 library(cowplot)
+library(scales)
 ```
 
 #read in data
@@ -197,10 +199,11 @@ counts_time_final
 ```{r}
 qpcr_mean <- aggregate(Copies_L_Corrected ~ Date, data = qpcr, FUN = mean)
 qpcr_mean$log_qpcr <- log(qpcr_mean$Copies_L_Corrected)
-qpcr_time <- ggplot(qpcr_mean, aes(x = Date, y = log_qpcr)) + 
+qpcr_time <- ggplot(qpcr_mean, aes(x = Date, y = Copies_L_Corrected)) + 
   geom_point(size = 4, color = "black", alpha = 0.75) + 
   theme_pubr() + 
-  labs(x = element_blank(), y = "Mean Log-transformed *A. catenella* qPCR Quantity (Copies/L)") + theme(axis.title.y = ggtext::element_markdown())
+  labs(x = element_blank(), y = "Mean *A. catenella* qPCR Quantity (Copies/L)") + theme(axis.title.y = ggtext::element_markdown()) +
+  scale_y_continuous(labels = label_comma())
  qpcr_time
 ```
 
