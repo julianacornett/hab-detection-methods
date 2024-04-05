@@ -18,6 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages("ggpubr")
 #install.package("ggpmisc")
 #install.packages("patchwork")
+#install.packages("ggpmisc")
 ```
 
 #load libraries
@@ -27,6 +28,7 @@ library(ggplot2)
 library(ggpubr)
 library(ggpmisc)
 library(patchwork)
+library(ggpmisc)
 ```
 
 #read in ELISA PSTs data
@@ -67,10 +69,17 @@ pst_pairs <- read.csv("../Data/PST_Pairs_v2.csv")
 ```
 
 ```{r}
+pst_inf <- subset(pst_pairs, PST_ELISA_ug_100g < 200)
+
 elisa_dec_corr <- ggplot(pst_pairs, aes(x = PST_MBA_ug_100g, y = PST_ELISA_ug_100g)) + 
   geom_point(size = 4, shape = 1) + 
-  stat_poly_line(se = FALSE, size = 2, color = "black") +
-  stat_poly_eq(use_label(c("R2", "p"))) +
+  #stat_poly_line(se = FALSE, size = 2, color = "black") +
+  #stat_poly_eq(use_label(c("p"))) +
+  geom_text(label = "p < 0.001", color = "black", x = 45, y = 235, check_overlap = TRUE) +
+  geom_text(label = "p = 0.004", color = "darkgray", x = 45, y = 225, check_overlap = TRUE) +
+  #this is the tobit regression line
+  geom_abline(intercept = 1.0582, slope = 1.1914, color="black", size=2) +
+  geom_abline(intercept = 2.3368, slope = 1.1509, ymax = 172.55, xmax = 121, color = "darkgray", size=2, linetype = "dashed") +
   theme_pubr() +
   xlab("PSTs from mouse bioassay (\u00b5g/100g)") +
   ylab("PSTs from ELISA (\u00b5g/100g)")

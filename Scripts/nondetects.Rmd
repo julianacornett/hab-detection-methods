@@ -41,8 +41,13 @@ pst_counts_mba <- subset(pst_counts, Method == "MBA")
 #tobit model for MBA~ELISA
 
 ```{r}
-tobit_pst = tobit(PST_MBA_ug_100g~PST_ELISA_ug_100g, data = pst, left = 34)
+tobit_pst = tobit(PST_ELISA_ug_100g~PST_MBA_ug_100g, data = pst, left = 34)
 summary(tobit_pst)
+
+#tobit regression with removal of influential point
+pst_inf <- subset(pst, PST_ELISA_ug_100g < 200)
+tobit_pst_inf = tobit(PST_ELISA_ug_100g~PST_MBA_ug_100g, data = pst_inf, left = 34)
+summary(tobit_pst_inf)
 ```
 
 #tobit model for MBA~1m
