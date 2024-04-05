@@ -73,7 +73,7 @@ pst_time
 #save as jpeg
 
 ```{r}
-jpeg("../Figures/Fig7.jpg", width = 8, height = 5, units="in", res=600)
+jpeg("../New Figures/FigS3.jpg", width = 8, height = 5, units="in", res=600)
 pst_time
 ```
 
@@ -119,9 +119,6 @@ pst_ros_time <- ggplot(psts_ros, aes(x = Date, y = Tox_ug_100g, fill = Method, s
     y = "PSTs (\u00b5g/100g)")  +
   geom_hline(yintercept = 80, linetype = "dashed") +
   geom_hline(yintercept = 34, linetype = "dotted")
-pst_ros_time
-
-jpeg("../New Figures/Fig4.jpg", width = 8, height = 5, units="in", res=600)
 pst_ros_time
 ```
 
@@ -191,7 +188,7 @@ counts_time_final <- ggdraw(counts_time) +
 
 counts_time_final
 
-jpeg("../New Figures/Fig2.jpg", width = 8, height = 5, units="in", res=600)
+jpeg("../New Figures/FigS1.jpg", width = 8, height = 5, units="in", res=600)
 counts_time_final
 ```
 
@@ -203,13 +200,13 @@ qpcr_mean$log_qpcr <- log(qpcr_mean$Copies_L_Corrected)
 qpcr_time <- ggplot(qpcr_mean, aes(x = Date, y = log_qpcr)) + 
   geom_point(size = 4, color = "black", alpha = 0.75) + 
   theme_pubr() + 
-  labs(x = element_blank(), y = "*A. catenella* qPCR Quantity (Copies/L)") + theme(axis.title.y = ggtext::element_markdown())
+  labs(x = element_blank(), y = "Mean Log-transformed *A. catenella* qPCR Quantity (Copies/L)") + theme(axis.title.y = ggtext::element_markdown())
  qpcr_time
 ```
 
 #save as jpeg
 
 ```{r}
-jpeg("../New Figures/Fig3.jpg", width = 8, height = 5, units="in", res=600)
+jpeg("../New Figures/FigS2.jpg", width = 8, height = 5, units="in", res=600)
 qpcr_time
 ```
