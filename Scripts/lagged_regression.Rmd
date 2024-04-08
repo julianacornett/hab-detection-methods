@@ -90,7 +90,7 @@ lag2.plot(df_merged_elisa_na$log_qpcr, df_merged_elisa_na$Tox_ug_100g, 1)
 logqpcrlag1 = lag(df_merged_elisa_na$log_qpcr, 1)
 summary(lm(Tox_ug_100g~logqpcrlag1, data = df_merged_elisa_na))
 
-lag_qpcr_elisa <- ggplot(df_merged_elisa_na, aes(x = logqpcrlag1, y = Tox_ug_100g)) + geom_point() + 
+lag_qpcr_elisa <- ggplot(df_merged_elisa_na, aes(x = logqpcrlag1, y = Tox_ug_100g)) + geom_point(size = 4, shape = 1) + 
   stat_poly_line(se = FALSE, size = 2, color = "black") +
   #stat_poly_eq(use_label(c("R2", "p"))) +
   theme_pubr() +
