@@ -134,7 +134,7 @@ merged_long_imputed$log_qpcr <- log(merged_long_imputed$Copies_L)
   #stat_poly_line(se = FALSE, size = 2) +
   #stat_poly_eq(use_label(c("R2", "p"))) +
   geom_text(aes(x = 15, y = 240, label = "r^2 == 0.40~~~p == 0.02"), parse = TRUE, color = "darkgray", check_overlap = TRUE) +
-  geom_text(aes(x = 14.6, y = 220, label = "p == 0.03"), parse = TRUE, color = "black", check_overlap = TRUE) +
+  geom_text(aes(x = 15, y = 220, label = "p == 0.03"), parse = TRUE, color = "black", check_overlap = TRUE) +
   geom_abline(intercept = -268.123, slope = 20.407, color = "darkgray", size=2) +
   geom_abline(intercept = -534.6620, slope = 32.1632, color="black", size=2) +
   theme_pubr() +
