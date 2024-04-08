@@ -217,8 +217,12 @@ corr_1m_tox <- ggplot(merged_long, aes(x = Count_1m_L, y = Tox_ug_100g, color = 
   scale_color_manual(values = c("darkgray", "black"), labels = c("ELISA", "MBA")) +
   scale_shape_manual(values = c(21,24), labels = c("ELISA", "MBA")) +
   geom_point(size = 4, color = "black", alpha = 0.75) + 
-  stat_poly_line(se = FALSE, size = 2) +
-  stat_poly_eq(use_label(c("R2", "p"))) +
+  #stat_poly_line(se = FALSE, size = 2) +
+  #stat_poly_eq(use_label(c("R2", "p"))) +
+  geom_text(aes(x = 150, y = 240, label = "r^2 == 0.13~~~p == 0.22"), parse = TRUE, color = "darkgray", check_overlap = TRUE) +
+  geom_text(aes(x = 150, y = 220, label = "p == 0.23"), parse = TRUE, color = "black", check_overlap = TRUE) +
+  geom_abline(intercept = 58.95, slope = 0.06, color = "darkgray", size=2) +
+  geom_abline(intercept = -28.72988, slope = 0.10, color="black", size=2) +
   theme_pubr() +
   labs(
     x = "*A. catenella* Count (cells/L)",
@@ -238,8 +242,12 @@ corr_5m_tox <- ggplot(merged_long, aes(x = Count_5m_L, y = Tox_ug_100g, color = 
   scale_color_manual(values = c("darkgray", "black"), labels = c("ELISA", "MBA")) +
   scale_shape_manual(values = c(21,24), labels = c("ELISA", "MBA")) +
   geom_point(size = 4, color = "black", alpha = 0.75) + 
-  stat_poly_line(se = FALSE, size = 2) +
-  stat_poly_eq(use_label(c("R2", "p"))) +
+  #stat_poly_line(se = FALSE, size = 2) +
+  #stat_poly_eq(use_label(c("R2", "p"))) +
+  #geom_text(aes(x = 150, y = 240, label = "r^2 == 0.13~~~p == 0.22"), parse = TRUE, color = "darkgray", check_overlap = TRUE) +
+  #geom_text(aes(x = 150, y = 220, label = "p == 0.23"), parse = TRUE, color = "black", check_overlap = TRUE) +
+  #geom_abline(intercept = 58.95, slope = 0.06, color = "darkgray", size=2) +
+  #geom_abline(intercept = -28.72988, slope = 0.10, color="black", size=2) +
   theme_pubr() +
   labs(
     x = "*A. catenella* Count (cells/L)",
