@@ -165,7 +165,7 @@ summary(lm_elisa_mba)
 
 ```{r}
 pst_pairs
-
+?hatvalues
 plot(hatvalues(lm_elisa_mba), ylab="Leverage")
 ```
 
