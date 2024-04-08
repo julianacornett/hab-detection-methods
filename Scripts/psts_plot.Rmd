@@ -285,7 +285,7 @@ corr_1m_tox /
 
 ```{r}
 lm_elisa_1m <- subset(merged_long, Method == "ELISA") 
-lm_elisa_1m <- lm(lm_elisa_1m$Count_1m_L ~ lm_elisa_1m$Tox_ug_100g)
+lm_elisa_1m <- lm(lm_elisa_1m$Tox_ug_100g ~ lm_elisa_1m$Count_1m_L)
 summary(lm_elisa_1m)
 ```
 
@@ -293,7 +293,7 @@ summary(lm_elisa_1m)
 
 ```{r}
 lm_elisa_net <- subset(merged_long, Method == "ELISA") 
-lm_elisa_net <- lm(lm_elisa_net$Count_Net ~ lm_elisa_net$Tox_ug_100g)
+lm_elisa_net <- lm(lm_elisa_net$Tox_ug_100g ~ lm_elisa_net$Count_Net)
 summary(lm_elisa_net)
 ```
 
@@ -301,7 +301,7 @@ summary(lm_elisa_net)
 
 ```{r}
 lm_elisa_5m <- subset(merged_long, Method == "ELISA") 
-lm_elisa_5m <- lm(lm_elisa_5m$Count_5m_L ~ lm_elisa_5m$Tox_ug_100g)
+lm_elisa_5m <- lm(lm_elisa_5m$Tox_ug_100g ~ lm_elisa_5m$Count_5m_L)
 summary(lm_elisa_5m)
 ```
 

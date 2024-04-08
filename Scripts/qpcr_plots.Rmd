@@ -93,7 +93,7 @@ count_qpcr$log_qpcr <- log(count_qpcr$Copies_L_Corrected)
 #linear regression between qpcr and net tow
 
 ```{r}
-lm_net_qpcr <- lm(count_qpcr$log_qpcr ~ count_qpcr$Count_Net)
+lm_net_qpcr <- lm(count_qpcr$Count_Net ~ count_qpcr$log_qpcr)
 summary(lm_net_qpcr)
 ```
 
@@ -141,7 +141,7 @@ qpcr_mic_corr
 
 ```{r}
 lm_1m_qpcr <- subset(count_depths, Depth == "1m") 
-lm_1m_qpcr <- lm(lm_1m_qpcr$log_qpcr ~ lm_1m_qpcr$Count_L)
+lm_1m_qpcr <- lm(lm_1m_qpcr$Count_L ~ lm_1m_qpcr$log_qpcr)
 summary(lm_1m_qpcr)
 ```
 
@@ -149,7 +149,7 @@ summary(lm_1m_qpcr)
 
 ```{r}
 lm_5m_qpcr <- subset(count_depths, Depth == "5m") 
-lm_5m_qpcr <- lm(lm_5m_qpcr$log_qpcr ~ lm_5m_qpcr$Count_L)
+lm_5m_qpcr <- lm(lm_5m_qpcr$Count_L ~ lm_5m_qpcr$log_qpcr)
 summary(lm_5m_qpcr)
 ```
 
