@@ -60,6 +60,11 @@ Quant_dailyMean <- aggregate(Copies_L_Corrected ~ Date, data = qpcr_sub, FUN = m
 Quant_dailyMean$Date <- as.Date(Quant_dailyMean$Date, "%m/%d/%Y")
 write.csv(Quant_dailyMean, "../Data/Alexandrium_qPCR_Results_DailyMean.csv")
 Quant_dailyMean[order(Quant_dailyMean$Copies_L_Corrected, decreasing = TRUE),]
+Quant_dailyMean$Cells_L <- Quant_dailyMean$Copies_L_Corrected/11107
+Quant_dailyMean
+max(Quant_dailyMean$Cells_L)
+min(Quant_dailyMean$Cells_L)
+mean(Quant_dailyMean$Cells_L)
 ```
 
 #regressions
