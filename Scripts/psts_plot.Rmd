@@ -139,7 +139,7 @@ merged_long_imputed$log_qpcr <- log(merged_long_imputed$Copies_L)
   geom_abline(intercept = -534.6620, slope = 32.1632, color="black", size=2) +
   theme_pubr() +
   labs(
-    x = "Mean log-transformed *A. catenella* qPCR Quantity (Copies/L)",
+    x = "Mean log-transformed *A. catenella* qPCR quantity (copies/L)",
     y = "PSTs (\u00b5g/100g)") +
   theme(legend.position = "right", axis.title.x = ggtext::element_markdown(), axis.title.y = ggtext::element_markdown()) +
   geom_hline(yintercept = 80, linetype = "dashed") +
@@ -225,7 +225,7 @@ corr_1m_tox <- ggplot(merged_long, aes(x = Count_1m_L, y = Tox_ug_100g, color = 
   geom_abline(intercept = -28.72988, slope = 0.10, color="black", size=2) +
   theme_pubr() +
   labs(
-    x = "*A. catenella* Count (cells/L)",
+    x = "*A. catenella* count (cells/L)",
     y = "PSTs (\u00b5g/100g)") +
   theme(legend.position = "right", axis.title.x = ggtext::element_markdown()) +
   geom_hline(yintercept = 80, linetype = "dashed") +
@@ -250,7 +250,7 @@ corr_5m_tox <- ggplot(merged_long, aes(x = Count_5m_L, y = Tox_ug_100g, color = 
   geom_abline(intercept = -23.81094, slope = 0.13, color="black", size=2) +
   theme_pubr() +
   labs(
-    x = "*A. catenella* Count (cells/L)",
+    x = "*A. catenella* count (cells/L)",
     y = "PSTs (\u00b5g/100g)") +
   theme(legend.position = "right", axis.title.x = ggtext::element_markdown()) +
   geom_hline(yintercept = 80, linetype = "dashed") +
@@ -275,7 +275,7 @@ corr_net_tox <- ggplot(merged_long, aes(x = Count_Net, y = Tox_ug_100g, color = 
   geom_abline(intercept = -2.1092, slope = 24.33, color="black", size=2) +
   theme_pubr() +
   labs(
-    x = "*A. catenella* Count (cells)",
+    x = "*A. catenella* count (cells)",
     y = "PSTs (\u00b5g/100g)") +
   theme(legend.position = "right", axis.title.x = ggtext::element_markdown()) +
   geom_hline(yintercept = 80, linetype = "dashed") +

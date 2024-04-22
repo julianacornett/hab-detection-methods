@@ -96,7 +96,7 @@ lag_qpcr_elisa <- ggplot(df_merged_elisa_na, aes(x = logqpcrlag1, y = Tox_ug_100
   theme_pubr() +
   geom_text(aes(x = 15, y = 240, label = "r^2 == 0.43~~~p == 0.002"), parse = TRUE, color = "black", check_overlap = TRUE) +
   labs(
-    x = "Mean log-transformed *A. catenella* qPCR Quantity (Copies/L) at t-1",
+    x = "Mean log-transformed *A. catenella* qPCR quantity (copies/L) at t-1",
     y = "PSTs from ELISA (\u00b5g/100g)") +
   theme(axis.title.x = ggtext::element_markdown(), axis.title.y = ggtext::element_markdown()) 
 lag_qpcr_elisa

@@ -118,9 +118,12 @@ count_depths$log_qpcr <- log(count_depths$Copies_L)
 ```
 
 ```{r}
+count_depths$Depth <- gsub("1m", "1 m", count_depths$Depth)
+count_depths$Depth <- gsub("5m", "5 m", count_depths$Depth)
+
 qpcr_mic_corr <- ggplot(count_depths, aes(x = log_qpcr, y = Count_L, color = Depth, fill = Depth, shape = Depth)) + 
-  scale_fill_manual(values = c("darkgray", "black"), labels = c("1m", "5m")) +
-  scale_color_manual(values = c("darkgray", "black"), labels = c("1m", "5m")) +
+  scale_fill_manual(values = c("darkgray", "black"), labels = c("1 m", "5 m")) +
+  scale_color_manual(values = c("darkgray", "black")) +
   scale_shape_manual(values = c(21,24)) +
   geom_point(size = 4, color = "black", alpha = 0.75) + 
   stat_poly_line(se = FALSE, size = 2) +
@@ -129,8 +132,8 @@ qpcr_mic_corr <- ggplot(count_depths, aes(x = log_qpcr, y = Count_L, color = Dep
   geom_text(aes(x = 15, y = 1250, label = "r^2 == 0.29~~~p == 0.03"), parse = TRUE, color = "black", check_overlap = TRUE) +
   theme_pubr() + 
   labs(
-    x = "Mean log-transformed *A. catenella* qPCR Quantity (Copies/L)",
-    y = "*A. catenella* Microscope Count (Cells/L)") +
+    x = "Mean log-transformed *A. catenella* qPCR quantity (copies/L)",
+    y = "*A. catenella* microscope count (cells/L)") +
   theme(legend.position = "right", axis.title.x = ggtext::element_markdown(), axis.title.y = ggtext::element_markdown())
 qpcr_mic_corr
 ```

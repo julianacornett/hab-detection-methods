@@ -135,8 +135,8 @@ counts_time <- ggplot(alex, aes(x=Date)) +
   geom_point(aes(y=Count_1m_L), fill = "darkgray", shape = 22, size = 3, alpha = 0.75) +
   geom_point(aes(y=Count_5m_L), fill = "black", shape = 25, size = 3, alpha = 0.75) +
   scale_y_continuous(
-    name = "*A. catenella* Count at 1m or 5m (Cells/L)",
-    sec.axis = sec_axis(~ . / 50, name = "*A. catenella* Count from Net Tow (Cells)")
+    name = "*A. catenella* count at 1 m or 5 m (cells/L)",
+    sec.axis = sec_axis(~ . / 50, name = "*A. catenella* count from net tow (cells)")
   ) +
   theme_pubr() +
   labs(x = element_blank()) +
@@ -154,8 +154,8 @@ alex_long <- select(alex, c("Date", "Count_Net", "Count_1m_L", "Count_5m_L"))
 alex_long <- melt(alex_long, id.vars = "Date", variable.name = "Method")
 alex_long$Method <- as.character(alex_long$Method)
 alex_long$Method[alex_long$Method=="Count_Net"] <- "Net"
-alex_long$Method[alex_long$Method=="Count_1m_L"] <- "1m"
-alex_long$Method[alex_long$Method=="Count_5m_L"] <- "5m"
+alex_long$Method[alex_long$Method=="Count_1m_L"] <- "1 m"
+alex_long$Method[alex_long$Method=="Count_5m_L"] <- "5 m"
 
 counts_time_v2 <- ggplot(alex_long, aes(x=Date, y=value, fill = Method, shape = Method)) +
   geom_point(size = 3, alpha = 0.75) +
@@ -202,7 +202,7 @@ qpcr_mean$log_qpcr <- log(qpcr_mean$Copies_L_Corrected)
 qpcr_time <- ggplot(qpcr_mean, aes(x = Date, y = Copies_L_Corrected)) + 
   geom_point(size = 4, color = "black", alpha = 0.75) + 
   theme_pubr() + 
-  labs(x = element_blank(), y = "Mean *A. catenella* qPCR Quantity (Copies/L)") + theme(axis.title.y = ggtext::element_markdown()) +
+  labs(x = element_blank(), y = "Mean *A. catenella* qPCR quantity (copies/L)") + theme(axis.title.y = ggtext::element_markdown()) +
   scale_y_continuous(labels = label_comma())
  qpcr_time
 ```
